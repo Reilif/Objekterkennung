@@ -4,18 +4,30 @@ package test;
 // But OpenCV for java doesn't have the method "imshow", so, we got to use  
 // java for that (drawImage) that uses Image or BufferedImage.  
 // So, how to go from one the other... Here is the way...  
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import javax.swing.*;
+import java.awt.image.DataBufferByte;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.highgui.VideoCapture;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.imgproc.Moments;
 
+
+
 public class Panel extends JPanel {
+	static{
+		System.loadLibrary("opencv_java246");
+	}
+		
 	private static final long serialVersionUID = 1L;
 	private BufferedImage image;
 	private static double x = 0;
@@ -36,6 +48,15 @@ public class Panel extends JPanel {
 	private void setImage(BufferedImage newimage) {
 		image = newimage;
 		return;
+	}
+	
+	public static Mat bufferedImageToMat(BufferedImage bufImg){
+		Mat ret = new Mat(0,0, CvType.CV_8UC3);
+		
+		byte[] pixels = ((DataBufferByte) bufImg.getRaster().getDataBuffer()).getData();
+		ret.put(0, 0, pixels);
+		
+		return ret;
 	}
 
 	/**
@@ -90,7 +111,6 @@ public class Panel extends JPanel {
 
 	public static void main(String arg[]) {
 		// Load the native library.
-		System.loadLibrary("opencv_java246");
 		
 		JFrame frame = new JFrame("BasicPanel");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -110,11 +130,7 @@ public class Panel extends JPanel {
 					frame.setSize(webcamImage.width() + 40,
 							webcamImage.height() + 60);
 
-					Mat therehold = getTherehold(webcamImage);
-
-					temp = matToBufferedImage(therehold);
-					panel.setImage(temp);
-					panel.repaint();
+					panel.setImage(webcamImage);
 				} else {
 					System.out.println(" --(!) No captured frame -- Break!");
 					break;
@@ -122,6 +138,13 @@ public class Panel extends JPanel {
 			}
 		}
 		return;
+	}
+
+	public void setImage(Mat webcamImage) {
+		Mat therehold = getTherehold(webcamImage);
+		BufferedImage temp = matToBufferedImage(therehold);
+		setImage(temp);
+		repaint();
 	}
 
 	private static Mat getTherehold(Mat webcamImage) {
