@@ -52,8 +52,14 @@ public class DronenTest {
 	        drone.start();
 	        
 //	        drone.getCommandManager().setLedsAnimation(LEDAnimation.BLINK_ORANGE, 3, 10);
-	        drone.getCommandManager().setSSIDSinglePlayer("Donald");
-//	        TutorialVideoListener tutorialVideoListener = new TutorialVideoListener(drone);
+//	        drone.getCommandManager().setSSIDSinglePlayer("Donald");
+	        TutorialVideoListener tutorialVideoListener = new TutorialVideoListener(drone);
+//	        
+//	        drone.getCommandManager().takeOff();
+//	        drone.getCommandManager().flatTrim();
+//	        
+//	        Thread.sleep(1000*10);
+//	        drone.getCommandManager().landing();
 	    }
 	    catch(Exception exc)
 	    {

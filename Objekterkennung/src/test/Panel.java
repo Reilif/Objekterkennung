@@ -29,6 +29,10 @@ public class Panel extends JPanel {
 		return image;
 	}
 
+	/**
+	 * Setzt das Aktuelle Bild
+	 * @param newimage
+	 */
 	private void setImage(BufferedImage newimage) {
 		image = newimage;
 		return;
@@ -71,7 +75,11 @@ public class Panel extends JPanel {
 	}
 
 	public void paintComponent(Graphics g) {
+		
 		BufferedImage temp = getImage();
+		if(temp != null){
+			
+		}
 		g.drawImage(temp, 10, 10, temp.getWidth(), temp.getHeight(), this);
 		
 		if(x > 0 && y > 0){
@@ -83,24 +91,26 @@ public class Panel extends JPanel {
 	public static void main(String arg[]) {
 		// Load the native library.
 		System.loadLibrary("opencv_java246");
+		
 		JFrame frame = new JFrame("BasicPanel");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(400, 400);
+		
 		Panel panel = new Panel();
 		frame.setContentPane(panel);
 		frame.setVisible(true);
 
-		Mat webcam_image = new Mat();
+		Mat webcamImage = new Mat();
 		BufferedImage temp;
 		VideoCapture capture = new VideoCapture(0);
 		if (capture.isOpened()) {
 			while (true) {
-				capture.read(webcam_image);
-				if (!webcam_image.empty()) {
-					frame.setSize(webcam_image.width() + 40,
-							webcam_image.height() + 60);
+				capture.read(webcamImage);
+				if (!webcamImage.empty()) {
+					frame.setSize(webcamImage.width() + 40,
+							webcamImage.height() + 60);
 
-					Mat therehold = getTherehold(webcam_image);
+					Mat therehold = getTherehold(webcamImage);
 
 					temp = matToBufferedImage(therehold);
 					panel.setImage(temp);
@@ -114,18 +124,20 @@ public class Panel extends JPanel {
 		return;
 	}
 
-	private static Mat getTherehold(Mat webcam_image) {
+	private static Mat getTherehold(Mat webcamImage) {
 		Mat mat = new Mat();
-		webcam_image.copyTo(mat);
-		Imgproc.cvtColor(webcam_image, mat, Imgproc.COLOR_BGR2HSV);
+		webcamImage.copyTo(mat);
+		Imgproc.cvtColor(webcamImage, mat, Imgproc.COLOR_BGR2HSV);
 
 		Mat ret = new Mat();
 		mat.copyTo(ret);
 
 		// Scalar lowerb = new Scalar(0, 179, 90);
 		// Scalar upperb = new Scalar(179, 179, 90);
+		
 		Scalar lowerb = new Scalar(20, 100, 100);
 		Scalar upperb = new Scalar(30, 255, 255);
+	
 		Core.inRange(mat, lowerb, upperb, ret);
 
 		Moments moments2 = Imgproc.moments(ret, true);
