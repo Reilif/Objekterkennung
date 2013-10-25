@@ -13,6 +13,7 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.imgproc.Moments;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -84,12 +85,26 @@ public class Panel extends JPanel {
 	public static void main(String arg[]) {
 		// Load the native library.
 		System.loadLibrary("opencv_java246");
-		JFrame frame = new JFrame("BasicPanel");
+
+        JFrame frame = new JFrame("BasicPanel");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(400, 400);
-		Panel panel = new Panel();
+
+        Panel panel = new Panel();
 		frame.setContentPane(panel);
 		frame.setVisible(true);
+
+        // erzeugt das Trackframe  & Panel
+        JFrame trackframe = new JFrame("TrackPanel");
+        trackframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        trackframe.setSize(400, 600);
+
+        TrackbarPanel trackPanel = new TrackbarPanel();
+        trackframe.setContentPane(trackPanel);
+        trackframe.setVisible(true);
+
+
+
 
 		Mat webcam_image = new Mat();
 		BufferedImage temp;
@@ -101,7 +116,7 @@ public class Panel extends JPanel {
 					frame.setSize(webcam_image.width() + 40,
 							webcam_image.height() + 60);
 
-					Mat therehold = getTherehold(webcam_image);
+					Mat therehold = getTherehold(webcam_image, trackPanel.getLow(), trackPanel.getUpper());
 
 					temp = matToBufferedImage(therehold);
 					panel.setImage(temp);
@@ -115,7 +130,9 @@ public class Panel extends JPanel {
 		return;
 	}
 
-	private static Mat getTherehold(Mat webcam_image) {
+
+
+	private static Mat getTherehold(Mat webcam_image, Scalar low, Scalar upper ) {
 		Mat mat = new Mat();
 		webcam_image.copyTo(mat);
 		Imgproc.cvtColor(webcam_image, mat, Imgproc.COLOR_BGR2HSV);
@@ -123,13 +140,19 @@ public class Panel extends JPanel {
 		Mat ret = new Mat();
 		mat.copyTo(ret);
 
-		// Scalar lowerb = new Scalar(0, 179, 90);
-		// Scalar upperb = new Scalar(179, 179, 90);
+        /*
+        // Grün
+        Scalar upperb = new Scalar(58, 179, 180);
+        Scalar lowerb = new Scalar(58, 64, 82);
 
-        Scalar lowerb = new Scalar(0, 100, 30);
-        Scalar upperb = new Scalar(5, 255, 255);
+        // Blau
+        Scalar lowerb = new Scalar(120, 180, 82);
+        Scalar upperb = new Scalar(112, 64, 82);
+        */
 
-		Core.inRange(mat, lowerb, upperb, ret);
+
+        Core.inRange(mat, low, upper, ret);
+
 
 		Moments moments2 = Imgproc.moments(ret, true);
         double m10 = moments2.get_m10();
