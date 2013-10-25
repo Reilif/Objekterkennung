@@ -84,8 +84,8 @@ class TrackbarPanel extends JPanel  {
         vMaxSlider.setMinorTickSpacing(1);
         vMaxSlider.setPaintTicks(true);
 
-        upper = new Scalar(hMin, sMin, vMin);
-        low = new Scalar(hMax, sMax, vMax);
+        upper = new Scalar(hMax, sMax, vMax);
+        low = new Scalar(hMin, sMin, vMin);
 
 
         // Layout Ebene 0
@@ -117,7 +117,7 @@ class TrackbarPanel extends JPanel  {
                 JSlider source = (JSlider) e.getSource();
                 if (!source.getValueIsAdjusting()) {
                     hMin = (int) source.getValue();
-                    upper = new Scalar(hMin, sMin, vMin);
+                    upper = new Scalar(hMax, sMax, vMax);
                     hMinLabel.setText("hMin: "+ hMin);
 
                 }
@@ -131,7 +131,7 @@ class TrackbarPanel extends JPanel  {
                 JSlider source = (JSlider)e.getSource();
                 if (!source.getValueIsAdjusting()) {
                     sMin = (int) source.getValue();
-                    upper = new Scalar(hMin, sMin, vMin);
+                    upper = new Scalar(hMax, sMax, vMax);
                     sMinLabel.setText("sMin: "+ sMin);
                 }
             }
@@ -144,7 +144,7 @@ class TrackbarPanel extends JPanel  {
                 JSlider source = (JSlider)e.getSource();
                 if (!source.getValueIsAdjusting()) {
                     vMin = (int) source.getValue();
-                    upper = new Scalar(hMin, sMin, vMin);
+                    upper = new Scalar(hMax, sMax, vMax);
                     vMinLabel.setText("vMin: "+ vMin);
                 }
             }
@@ -157,7 +157,7 @@ class TrackbarPanel extends JPanel  {
                 JSlider source = (JSlider) e.getSource();
                 if (!source.getValueIsAdjusting()) {
                     hMax = (int) source.getValue();
-                    low = new Scalar(hMax, sMax, vMax);
+                    low = new Scalar(hMin, sMin, vMin);
                     hMaxLabel.setText("hMax: "+ hMax);
 
                 }
@@ -171,7 +171,7 @@ class TrackbarPanel extends JPanel  {
                 JSlider source = (JSlider)e.getSource();
                 if (!source.getValueIsAdjusting()) {
                     sMax = (int) source.getValue();
-                    low = new Scalar(hMax, sMax, vMax);
+                    low = new Scalar(hMin, sMin, vMin);
                     sMaxLabel.setText("sMax: "+ sMax);
                 }
             }
@@ -184,7 +184,7 @@ class TrackbarPanel extends JPanel  {
                 JSlider source = (JSlider)e.getSource();
                 if (!source.getValueIsAdjusting()) {
                     vMax = (int) source.getValue();
-                    low = new Scalar(hMax, sMax, vMax);
+                    low = new Scalar(hMin, sMin, vMin);
                     vMaxLabel.setText("vMax: "+ vMax);
                 }
             }
