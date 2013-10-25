@@ -121,4 +121,5 @@ class TrackbarPanel extends JPanel implements ChangeListener {
         return low = new Scalar(hMax, sMax, vMax);
     }
 
+
 }

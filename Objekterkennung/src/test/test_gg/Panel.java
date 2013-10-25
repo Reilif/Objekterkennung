@@ -82,6 +82,7 @@ public class Panel extends JPanel {
 		}
 	}
 
+
 	public static void main(String arg[]) {
 		// Load the native library.
 		System.loadLibrary("opencv_java246");
@@ -118,7 +119,7 @@ public class Panel extends JPanel {
 					frame.setSize(webcam_image.width() + 40,
 							webcam_image.height() + 60);
 
-					Mat therehold = getTherehold(webcam_image, trackPanel.getLow(), trackPanel.getUpper());
+                    Mat therehold = getTherehold(webcam_image, trackPanel.getLow(), trackPanel.getUpper());
 
 					temp = matToBufferedImage(therehold);
 					panel.setImage(temp);
