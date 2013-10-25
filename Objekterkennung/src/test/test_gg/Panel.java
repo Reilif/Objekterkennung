@@ -106,6 +106,8 @@ public class Panel extends JPanel {
 
 
 
+
+
 		Mat webcam_image = new Mat();
 		BufferedImage temp;
 		VideoCapture capture = new VideoCapture(0);

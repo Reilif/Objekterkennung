@@ -3,11 +3,12 @@ import org.opencv.core.Scalar;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
 
-class TrackbarPanel extends JPanel {
+class TrackbarPanel extends JPanel implements ChangeListener {
     private int hMin = 58;
     private int sMin = 179;
     private int vMin = 180;
@@ -42,6 +43,12 @@ class TrackbarPanel extends JPanel {
         sMaxSlider = new JSlider(JSlider.HORIZONTAL, 0, 240, sMax);
         vMaxSlider = new JSlider(JSlider.HORIZONTAL, 0, 240, vMax);
 
+        //Turn on major tick marks.
+        hMinSlider.setMajorTickSpacing(10);
+        hMinSlider.setMinorTickSpacing(1);
+        hMinSlider.setPaintTicks(true);
+
+
 
         // Layout Ebene 0
         GridLayout layoutEbene0 = new GridLayout(7, 1);
@@ -55,15 +62,7 @@ class TrackbarPanel extends JPanel {
         this.add(hMaxSlider);
         this.add(sMaxSlider);
         this.add(vMaxSlider);
-
-
-
     }
-
-
-
-
-
 
     public void stateChanged(ChangeEvent e) {
         JSlider source = (JSlider)e.getSource();
@@ -80,13 +79,35 @@ class TrackbarPanel extends JPanel {
             }else if (source.getName() == "hMaxSlider" ) {
                 int hMax = (int)source.getValue();
             }
-
-
-
-
         }
     }
 
+
+
+
+    /**
+     * Getter fuer die Slider
+     * @return
+     */
+    public JSlider getHMinSlider() {
+        return hMinSlider;
+    }
+    public JSlider getSMinSlider() {
+        return sMinSlider;
+    }
+    public JSlider getVMinSlider() {
+        return vMinSlider;
+    }
+
+    public JSlider getHMaxSlider() {
+        return hMaxSlider;
+    }
+    public JSlider getSMaxSlider() {
+        return sMaxSlider;
+    }
+    public JSlider getVMaxSlider() {
+        return vMaxSlider;
+    }
 
 
     /**
