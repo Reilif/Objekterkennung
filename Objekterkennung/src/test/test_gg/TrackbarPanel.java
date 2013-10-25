@@ -8,7 +8,7 @@ import java.awt.*;
 
 
 
-class TrackbarPanel extends JPanel implements ChangeListener {
+class TrackbarPanel extends JPanel  {
     private int hMin = 58;
     private int sMin = 179;
     private int vMin = 180;
@@ -47,6 +47,8 @@ class TrackbarPanel extends JPanel implements ChangeListener {
         hMinSlider.setMinorTickSpacing(1);
         hMinSlider.setPaintTicks(true);
 
+        upper = new Scalar(hMin, sMin, vMin);
+        low = new Scalar(hMax, sMax, vMax);
 
 
         // Layout Ebene 0
@@ -64,45 +66,82 @@ class TrackbarPanel extends JPanel implements ChangeListener {
 
         //Fuer den hMinSlider
         hMinSlider.addChangeListener(new ChangeListener() {
-                    @Override
-                    public void stateChanged(ChangeEvent e) {
-                        JSlider source = (JSlider)e.getSource();
-                        if (!source.getValueIsAdjusting()) {
-                            int hMin = (int)source.getValue();
-                        }
-                    }
-                });
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                JSlider source = (JSlider) e.getSource();
+                if (!source.getValueIsAdjusting()) {
+                    hMin = (int) source.getValue();
+                    upper = new Scalar(hMin, sMin, vMin);
 
+                }
+            }
+        });
+
+        //Fuer den sMinSlider
         sMinSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 JSlider source = (JSlider)e.getSource();
                 if (!source.getValueIsAdjusting()) {
-                    int sMin = (int)source.getValue();
+                    sMin = (int) source.getValue();
+                    upper = new Scalar(hMin, sMin, vMin);
                 }
             }
         });
 
-
-    }
-
-    public void stateChanged(ChangeEvent e) {
-        JSlider source = (JSlider)e.getSource();
-        if (!source.getValueIsAdjusting()) {
-            if (source.getName() == "hMinSlider" ){
-                int hMin = (int)source.getValue();
-
-            }else if (source.getName() == "sMinSlider" ) {
-                int sMin = (int)source.getValue();
-
-            }else if (source.getName() == "vMinSlider" ) {
-                int vMin = (int)source.getValue();
-
-            }else if (source.getName() == "hMaxSlider" ) {
-                int hMax = (int)source.getValue();
+        //Fuer den vMinSlider
+        vMinSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                JSlider source = (JSlider)e.getSource();
+                if (!source.getValueIsAdjusting()) {
+                    vMin = (int) source.getValue();
+                    upper = new Scalar(hMin, sMin, vMin);
+                }
             }
-        }
+        });
+
+        //Fuer den hMinSlider
+        hMaxSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                JSlider source = (JSlider) e.getSource();
+                if (!source.getValueIsAdjusting()) {
+                    hMax = (int) source.getValue();
+                    low = new Scalar(hMax, sMax, vMax);
+
+                }
+            }
+        });
+
+        //Fuer den sMinSlider
+        sMaxSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                JSlider source = (JSlider)e.getSource();
+                if (!source.getValueIsAdjusting()) {
+                    sMax = (int) source.getValue();
+                    low = new Scalar(hMax, sMax, vMax);
+                }
+            }
+        });
+
+        //Fuer den vMinSlider
+        vMaxSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                JSlider source = (JSlider)e.getSource();
+                if (!source.getValueIsAdjusting()) {
+                    vMax = (int) source.getValue();
+                    low = new Scalar(hMax, sMax, vMax);
+                }
+            }
+        });
+
     }
+
+
+
 
     /**
      * Getter fuer die Slider
@@ -134,10 +173,10 @@ class TrackbarPanel extends JPanel implements ChangeListener {
      * @return
      */
     public Scalar getUpper() {
-        return upper = new Scalar(hMin, sMin, vMin);
+        return upper;
     }
     public Scalar getLow() {
-        return low = new Scalar(hMax, sMax, vMax);
+        return low;
     }
 
 
