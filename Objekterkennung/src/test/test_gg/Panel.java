@@ -108,7 +108,6 @@ public class Panel extends JPanel {
 
 
 
-
 		Mat webcam_image = new Mat();
 		BufferedImage temp;
 		VideoCapture capture = new VideoCapture(0);
@@ -118,6 +117,7 @@ public class Panel extends JPanel {
 				if (!webcam_image.empty()) {
 					frame.setSize(webcam_image.width() + 40,
 							webcam_image.height() + 60);
+
 
                     Mat therehold = getTherehold(webcam_image, trackPanel.getLow(), trackPanel.getUpper());
 

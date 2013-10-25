@@ -5,7 +5,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionListener;
+
 
 
 class TrackbarPanel extends JPanel implements ChangeListener {
@@ -28,8 +28,7 @@ class TrackbarPanel extends JPanel implements ChangeListener {
     Scalar upper;
     Scalar low;
 
-    Timer timer;
-    int delay;
+
 
     public TrackbarPanel() {
         super();
@@ -62,6 +61,29 @@ class TrackbarPanel extends JPanel implements ChangeListener {
         this.add(hMaxSlider);
         this.add(sMaxSlider);
         this.add(vMaxSlider);
+
+        //Fuer den hMinSlider
+        hMinSlider.addChangeListener(new ChangeListener() {
+                    @Override
+                    public void stateChanged(ChangeEvent e) {
+                        JSlider source = (JSlider)e.getSource();
+                        if (!source.getValueIsAdjusting()) {
+                            int hMin = (int)source.getValue();
+                        }
+                    }
+                });
+
+        sMinSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                JSlider source = (JSlider)e.getSource();
+                if (!source.getValueIsAdjusting()) {
+                    int sMin = (int)source.getValue();
+                }
+            }
+        });
+
+
     }
 
     public void stateChanged(ChangeEvent e) {
@@ -81,9 +103,6 @@ class TrackbarPanel extends JPanel implements ChangeListener {
             }
         }
     }
-
-
-
 
     /**
      * Getter fuer die Slider
@@ -120,6 +139,7 @@ class TrackbarPanel extends JPanel implements ChangeListener {
     public Scalar getLow() {
         return low = new Scalar(hMax, sMax, vMax);
     }
+
 
 
 }
