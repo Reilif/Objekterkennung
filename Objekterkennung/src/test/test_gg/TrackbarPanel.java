@@ -1,4 +1,5 @@
 package test.test_gg;
+
 import org.opencv.core.Scalar;
 
 import javax.swing.*;
@@ -6,231 +7,203 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 
+class TrackbarPanel extends JPanel {
+	JSlider hMinSlider;
+	JSlider sMinSlider;
+	JSlider vMinSlider;
+	JSlider hMaxSlider;
+	JSlider sMaxSlider;
+	JSlider vMaxSlider;
+	JLabel  hMinLabel;
+	JLabel  sMinLabel;
+	JLabel  vMinLabel;
+	JLabel  hMaxLabel;
+	JLabel  sMaxLabel;
+	JLabel  vMaxLabel;
+	Scalar  upper;
+	Scalar  lower;
+	private int hMin = 0;
+	private int sMin = 56;
+	private int vMin = 101;
+	private int hMax = 25;
+	private int sMax = 122;
+	private int vMax = 255;
 
+	public TrackbarPanel() {
+		super();
 
-class TrackbarPanel extends JPanel  {
-    private int hMin = 58;
-    private int sMin = 179;
-    private int vMin = 180;
+		// Anlegen der JSlider
+		hMinSlider = new JSlider(JSlider.HORIZONTAL, 0, 180, hMin);
+		sMinSlider = new JSlider(JSlider.HORIZONTAL, 0, 255, sMin);
+		vMinSlider = new JSlider(JSlider.HORIZONTAL, 0, 255, vMin);
 
-    private int hMax = 58;
-    private int sMax = 64;
-    private int vMax = 82;
+		hMaxSlider = new JSlider(JSlider.HORIZONTAL, 0, 180, hMax);
+		sMaxSlider = new JSlider(JSlider.HORIZONTAL, 0, 255, sMax);
+		vMaxSlider = new JSlider(JSlider.HORIZONTAL, 0, 255, vMax);
 
-    JSlider hMinSlider;
-    JSlider sMinSlider;
-    JSlider vMinSlider;
+		// Anlegen der JLabels
+		hMinLabel = new JLabel("hMin: " + hMin);
+		sMinLabel = new JLabel("sMin: " + sMin);
+		vMinLabel = new JLabel("vMin: " + vMin);
 
-    JSlider hMaxSlider;
-    JSlider sMaxSlider;
-    JSlider vMaxSlider;
+		hMaxLabel = new JLabel("hMax: " + hMax);
+		sMaxLabel = new JLabel("sMax: " + sMax);
+		vMaxLabel = new JLabel("vMax: " + vMax);
 
-    JLabel hMinLabel;
-    JLabel sMinLabel;
-    JLabel vMinLabel;
+		//Anzeige der Skala
+		hMinSlider.setMajorTickSpacing(10);
+		hMinSlider.setMinorTickSpacing(1);
+		hMinSlider.setPaintTicks(true);
 
-    JLabel hMaxLabel;
-    JLabel sMaxLabel;
-    JLabel vMaxLabel;
+		sMinSlider.setMajorTickSpacing(10);
+		sMinSlider.setMinorTickSpacing(1);
+		sMinSlider.setPaintTicks(true);
 
-    Scalar upper;
-    Scalar low;
+		vMinSlider.setMajorTickSpacing(10);
+		vMinSlider.setMinorTickSpacing(1);
+		vMinSlider.setPaintTicks(true);
 
+		hMaxSlider.setMajorTickSpacing(10);
+		hMaxSlider.setMinorTickSpacing(1);
+		hMaxSlider.setPaintTicks(true);
 
+		sMaxSlider.setMajorTickSpacing(10);
+		sMaxSlider.setMinorTickSpacing(1);
+		sMaxSlider.setPaintTicks(true);
 
-    public TrackbarPanel() {
-        super();
+		vMaxSlider.setMajorTickSpacing(10);
+		vMaxSlider.setMinorTickSpacing(1);
+		vMaxSlider.setPaintTicks(true);
 
-        // Anlegen der JSlider
-        hMinSlider = new JSlider(JSlider.HORIZONTAL, 0, 180, hMin);
-        sMinSlider = new JSlider(JSlider.HORIZONTAL, 0, 255, sMin);
-        vMinSlider = new JSlider(JSlider.HORIZONTAL, 0, 255, vMin);
+		lower = new Scalar(hMin, sMin, vMin);
+		upper = new Scalar(hMax, sMax, vMax);
 
-        hMaxSlider = new JSlider(JSlider.HORIZONTAL, 0, 180, hMax);
-        sMaxSlider = new JSlider(JSlider.HORIZONTAL, 0, 255, sMax);
-        vMaxSlider = new JSlider(JSlider.HORIZONTAL, 0, 255, vMax);
+		// Layout Ebene 0
+		GridLayout layoutEbene0 = new GridLayout(14, 2);
+		this.setLayout(layoutEbene0);    // 14 Zeilen, 2 Spalte
 
-        // Anlegen der JLabels
-        hMinLabel = new JLabel("hMin: " + hMin);
-        sMinLabel = new JLabel("sMin: " + sMin);
-        vMinLabel = new JLabel("vMin: " + vMin);
+		// Hinzufügen der Elemente
+		this.add(hMinLabel);
+		this.add(hMinSlider);
+		this.add(sMinLabel);
+		this.add(sMinSlider);
+		this.add(vMinLabel);
+		this.add(vMinSlider);
+		this.add(new JPanel());
+		this.add(new JPanel());
+		this.add(hMaxLabel);
+		this.add(hMaxSlider);
+		this.add(sMaxLabel);
+		this.add(sMaxSlider);
+		this.add(vMaxLabel);
+		this.add(vMaxSlider);
 
-        hMaxLabel = new JLabel("hMax: " + hMax);
-        sMaxLabel = new JLabel("sMax: " + sMax);
-        vMaxLabel = new JLabel("vMax: " + vMax);
+		//Fuer den hMinSlider
+		hMinSlider.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				JSlider source = (JSlider) e.getSource();
+				hMin = source.getValue();
+				lower = new Scalar(hMin, sMin, vMin);
+				hMinLabel.setText("hMin: " + hMin);
+			}
+		});
 
-        //Anzeige der Skala
-        hMinSlider.setMajorTickSpacing(10);
-        hMinSlider.setMinorTickSpacing(1);
-        hMinSlider.setPaintTicks(true);
+		//Fuer den sMinSlider
+		sMinSlider.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				JSlider source = (JSlider) e.getSource();
+				sMin = source.getValue();
+				lower = new Scalar(hMin, sMin, vMin);
+				sMinLabel.setText("sMin: " + sMin);
+			}
+		});
 
-        sMinSlider.setMajorTickSpacing(10);
-        sMinSlider.setMinorTickSpacing(1);
-        sMinSlider.setPaintTicks(true);
+		//Fuer den vMinSlider
+		vMinSlider.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				JSlider source = (JSlider) e.getSource();
+				vMin = source.getValue();
+				lower = new Scalar(hMin, sMin, vMin);
+				vMinLabel.setText("vMin: " + vMin);
+			}
+		});
 
-        vMinSlider.setMajorTickSpacing(10);
-        vMinSlider.setMinorTickSpacing(1);
-        vMinSlider.setPaintTicks(true);
+		//Fuer den hMinSlider
+		hMaxSlider.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				JSlider source = (JSlider) e.getSource();
+				hMax = source.getValue();
+				upper = new Scalar(hMax, sMax, vMax);
+				hMaxLabel.setText("hMax: " + hMax);
+			}
+		});
 
-        hMaxSlider.setMajorTickSpacing(10);
-        hMaxSlider.setMinorTickSpacing(1);
-        hMaxSlider.setPaintTicks(true);
+		//Fuer den sMinSlider
+		sMaxSlider.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				JSlider source = (JSlider) e.getSource();
+				sMax = source.getValue();
+				upper = new Scalar(hMax, sMax, vMax);
+				sMaxLabel.setText("sMax: " + sMax);
+			}
+		});
 
-        sMaxSlider.setMajorTickSpacing(10);
-        sMaxSlider.setMinorTickSpacing(1);
-        sMaxSlider.setPaintTicks(true);
+		//Fuer den vMinSlider
+		vMaxSlider.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				JSlider source = (JSlider) e.getSource();
+				vMax = source.getValue();
+				upper = new Scalar(hMax, sMax, vMax);
+				vMaxLabel.setText("vMax: " + vMax);
+			}
+		});
+	}
 
-        vMaxSlider.setMajorTickSpacing(10);
-        vMaxSlider.setMinorTickSpacing(1);
-        vMaxSlider.setPaintTicks(true);
+	/**
+	 * Getter fuer die Slider
+	 *
+	 * @return
+	 */
+	public JSlider getHMinSlider() {
+		return hMinSlider;
+	}
 
-        upper = new Scalar(hMin, sMin, vMin);
-        low = new Scalar(hMax, sMax, vMax);
+	public JSlider getSMinSlider() {
+		return sMinSlider;
+	}
 
+	public JSlider getVMinSlider() {
+		return vMinSlider;
+	}
 
-        // Layout Ebene 0
-        GridLayout layoutEbene0 = new GridLayout(14, 2);
-        this.setLayout(layoutEbene0);	// 14 Zeilen, 2 Spalte
+	public JSlider getHMaxSlider() {
+		return hMaxSlider;
+	}
 
+	public JSlider getSMaxSlider() {
+		return sMaxSlider;
+	}
 
+	public JSlider getVMaxSlider() {
+		return vMaxSlider;
+	}
 
-        // Hinzufügen der Elemente
-        this.add(hMinLabel);
-        this.add(hMinSlider);
-        this.add(sMinLabel);
-        this.add(sMinSlider);
-        this.add(vMinLabel);
-        this.add(vMinSlider);
-        this.add(new JPanel());
-        this.add(new JPanel());
-        this.add(hMaxLabel);
-        this.add(hMaxSlider);
-        this.add(sMaxLabel);
-        this.add(sMaxSlider);
-        this.add(vMaxLabel);
-        this.add(vMaxSlider);
+	/**
+	 * Getter fuer die Werte
+	 *
+	 * @return
+	 */
+	public Scalar getUpper() {
+		return upper;
+	}
 
-        //Fuer den hMinSlider
-        hMinSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                JSlider source = (JSlider) e.getSource();
-                if (!source.getValueIsAdjusting()) {
-                    hMin = (int) source.getValue();
-                    upper = new Scalar(hMin, sMin, vMin);
-                    hMinLabel.setText("hMin: "+ hMin);
-
-                }
-            }
-        });
-
-        //Fuer den sMinSlider
-        sMinSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                JSlider source = (JSlider)e.getSource();
-                if (!source.getValueIsAdjusting()) {
-                    sMin = (int) source.getValue();
-                    upper = new Scalar(hMin, sMin, vMin);
-                    sMinLabel.setText("sMin: "+ sMin);
-                }
-            }
-        });
-
-        //Fuer den vMinSlider
-        vMinSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                JSlider source = (JSlider)e.getSource();
-                if (!source.getValueIsAdjusting()) {
-                    vMin = (int) source.getValue();
-                    upper = new Scalar(hMin, sMin, vMin);
-                    vMinLabel.setText("vMin: "+ vMin);
-                }
-            }
-        });
-
-        //Fuer den hMinSlider
-        hMaxSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                JSlider source = (JSlider) e.getSource();
-                if (!source.getValueIsAdjusting()) {
-                    hMax = (int) source.getValue();
-                    low = new Scalar(hMax, sMax, vMax);
-                    hMaxLabel.setText("hMax: "+ hMax);
-
-                }
-            }
-        });
-
-        //Fuer den sMinSlider
-        sMaxSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                JSlider source = (JSlider)e.getSource();
-                if (!source.getValueIsAdjusting()) {
-                    sMax = (int) source.getValue();
-                    low = new Scalar(hMax, sMax, vMax);
-                    sMaxLabel.setText("sMax: "+ sMax);
-                }
-            }
-        });
-
-        //Fuer den vMinSlider
-        vMaxSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                JSlider source = (JSlider)e.getSource();
-                if (!source.getValueIsAdjusting()) {
-                    vMax = (int) source.getValue();
-                    low = new Scalar(hMax, sMax, vMax);
-                    vMaxLabel.setText("vMax: "+ vMax);
-                }
-            }
-        });
-
-    }
-
-
-
-
-    /**
-     * Getter fuer die Slider
-     * @return
-     */
-    public JSlider getHMinSlider() {
-        return hMinSlider;
-    }
-    public JSlider getSMinSlider() {
-        return sMinSlider;
-    }
-    public JSlider getVMinSlider() {
-        return vMinSlider;
-    }
-
-    public JSlider getHMaxSlider() {
-        return hMaxSlider;
-    }
-    public JSlider getSMaxSlider() {
-        return sMaxSlider;
-    }
-    public JSlider getVMaxSlider() {
-        return vMaxSlider;
-    }
-
-
-    /**
-     * Getter fuer die Werte
-     * @return
-     */
-    public Scalar getUpper() {
-        return upper;
-    }
-    public Scalar getLow() {
-        return low;
-    }
-
-
-
+	public Scalar getLower() {
+		return lower;
+	}
 }
