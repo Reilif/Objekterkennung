@@ -22,17 +22,12 @@ public class Panel extends JPanel {
 	private static double x = 0;
 	private static double y = 0;
 
-	public Panel() {
-		super();
-	}
-
 	private BufferedImage getImage() {
 		return image;
 	}
 
 	private void setImage(BufferedImage newimage) {
 		image = newimage;
-		return;
 	}
 
 	/**
@@ -73,11 +68,13 @@ public class Panel extends JPanel {
 
 	public void paintComponent(Graphics g) {
 		BufferedImage temp = getImage();
-		g.drawImage(temp, 10, 10, temp.getWidth(), temp.getHeight(), this);
+		if(temp != null) {
+			g.drawImage(temp, 10, 10, temp.getWidth(), temp.getHeight(), this);
 
-		if(x > 0 && y > 0) {
-			g.setColor(Color.YELLOW);
-			((Graphics2D) g).fillOval((int) x - 5, (int) y - 5, 10, 10);
+			if(x > 0 && y > 0) {
+				g.setColor(Color.YELLOW);
+				g.fillOval((int) x - 5, (int) y - 5, 10, 10);
+			}
 		}
 	}
 
@@ -124,7 +121,6 @@ public class Panel extends JPanel {
 				}
 			}
 		}
-		return;
 	}
 
 	private static Mat getTherehold(Mat webcam_image, Scalar low, Scalar upper) {
@@ -134,16 +130,6 @@ public class Panel extends JPanel {
 
 		Mat ret = new Mat();
 		mat.copyTo(ret);
-
-        /*
-        // Grün
-        Scalar upperb = new Scalar(58, 179, 180);
-        Scalar lowerb = new Scalar(58, 64, 82);
-
-        // Blau
-        Scalar lowerb = new Scalar(120, 180, 82);
-        Scalar upperb = new Scalar(112, 64, 82);
-        */
 
 		Core.inRange(mat, low, upper, ret);
 
