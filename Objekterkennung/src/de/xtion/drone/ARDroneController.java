@@ -1,35 +1,47 @@
 package de.xtion.drone;
 
+import javax.swing.JFrame;
+
 import de.xtion.drone.interfaces.DrohnenController;
 import de.xtion.drone.interfaces.Navdata;
 import de.xtion.drone.interfaces.OBJController;
+import de.yadrone.base.ARDrone;
 
 public class ARDroneController implements DrohnenController {
 
+	private ARDrone drone;
+
 	@Override
 	public void addOBJController(OBJController contr) {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void setNavdata(Navdata data) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public boolean connectToDrone() {
-		return false;
+		ARDrone arDrone = getDrone();
+		arDrone.start();
+		return arDrone.getCommandManager().isConnected();
 	}
 
 	public void showLiveCam() {
-		// TODO Auto-generated method stub
+		JFrame jFrame = new JFrame();
+		jFrame.setSize(400, 400);
 		
 	}
 
 	public void stop() {
-		// TODO Auto-generated method stub
 		
+	}
+	
+	private ARDrone getDrone(){
+		if(drone == null){
+			drone = new ARDrone();
+		}
+		return drone;
 	}
 
 }
