@@ -6,6 +6,6 @@ public interface OBJController {
 	
 	public void addNavController(NavController contr);
 	
-	public void setImage(BufferedImage data);
+	public void processImage(BufferedImage data);
 
 }

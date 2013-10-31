@@ -93,8 +93,8 @@ public class ColorOBJController implements OBJController {
 	}
 
 	@Override
-	public void setImage(BufferedImage data) {
-
+	public void processImage(BufferedImage data) {
+		
 	}
 
 	private Mat getTherehold(Mat webcamImage) {
