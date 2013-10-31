@@ -11,6 +11,7 @@ import org.opencv.imgproc.Moments;
 
 import de.xtion.drone.interfaces.NavController;
 import de.xtion.drone.interfaces.OBJController;
+import de.xtion.drone.utils.ImageUtils;
 
 public class ColorOBJController implements OBJController {
 
@@ -37,6 +38,9 @@ public class ColorOBJController implements OBJController {
 
 	@Override
 	public void processImage(BufferedImage data) {
+		Mat mat = ImageUtils.bufferedImageToMat(data);
+		Mat therehold = getTherehold(mat);
+		BufferedImage temp =ImageUtils.matToBufferedImage(therehold);
 		
 	}
 
