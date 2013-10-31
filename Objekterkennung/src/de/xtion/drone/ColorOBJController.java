@@ -41,6 +41,7 @@ public class ColorOBJController implements OBJController {
 		Mat mat = ImageUtils.bufferedImageToMat(data);
 		Mat therehold = getTherehold(mat);
 		BufferedImage temp =ImageUtils.matToBufferedImage(therehold);
+		
 	}
 
 	private Mat getTherehold(Mat webcamImage) {

@@ -1,6 +1,7 @@
 package de.xtion.drone.launcher;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridLayout;
@@ -10,6 +11,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -18,12 +20,14 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 
 import de.xtion.drone.ARDroneController;
 import de.xtion.drone.ColorOBJController;
 
 public class Launcher {
 
+	private static final Border MONITOR_BORDER = BorderFactory.createLineBorder(Color.BLUE);
 	private final ActionReset actionReset = new ActionReset();
 	private final ActionConnect actionConnect = new ActionConnect();
 	private final ActionShowLiveCam actionShowLiveCam = new ActionShowLiveCam();
@@ -171,9 +175,41 @@ public class Launcher {
 				}
 			}
 		};
-		monitor1 = new JLabel();
-		monitor2 = new JLabel();
-		monitor3 = new JLabel();
+		
+		monitor0.setBorder(MONITOR_BORDER);
+		monitor1 = new JLabel(){
+			@Override
+			public void setIcon(Icon icon) {
+				super.setIcon(icon);
+				if(icon == null){
+					setText("Kein Bild auf Monitor 1");
+				}else{
+					setText("");
+				}
+			}
+		};
+		monitor2 = new JLabel(){
+			@Override
+			public void setIcon(Icon icon) {
+				super.setIcon(icon);
+				if(icon == null){
+					setText("Kein Bild auf Monitor 2");
+				}else{
+					setText("");
+				}
+			}
+		};
+		monitor3 = new JLabel(){
+			@Override
+			public void setIcon(Icon icon) {
+				super.setIcon(icon);
+				if(icon == null){
+					setText("Kein Bild auf Monitor 3");
+				}else{
+					setText("");
+				}
+			}
+		};
 		
 		jPanel.add(monitor0);
 		jPanel.add(monitor1);
