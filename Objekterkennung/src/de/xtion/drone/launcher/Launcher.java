@@ -32,6 +32,7 @@ import de.xtion.drone.ARDroneController;
 import de.xtion.drone.ColorOBJController;
 import de.xtion.drone.gui.ColorAdjustment;
 import de.xtion.drone.gui.EdgeAdjustment;
+import de.xtion.drone.interfaces.DrohnenController;
 import de.xtion.drone.manipulation.ColorDetection;
 import de.xtion.drone.manipulation.EdgeDetection;
 import de.xtion.drone.model.ColorModel;
@@ -52,7 +53,7 @@ public class Launcher {
 	}
 	private static final Border MONITOR_BORDER = BorderFactory.createLineBorder(Color.BLUE);
 	
-	private final  ActionShowEdgeCam actionEdge = new ActionShowEdgeCam();
+	private final ActionShowEdgeCam actionEdge = new ActionShowEdgeCam();
 	private final ActionShowColorTrack actionShowColorTrack = new ActionShowColorTrack();
 	private final ActionReset actionReset = new ActionReset();
 	private final ActionConnect actionConnect = new ActionConnect();
@@ -170,7 +171,7 @@ public class Launcher {
 		launcher.start();
 	}
 
-	private final ARDroneController arDroneController;
+	private final DrohnenController arDroneController;
 	private JFrame jFrame;
 	private JButton colorTrackButton;
 	private JLabel monitor1;
@@ -367,7 +368,7 @@ public class Launcher {
 	}
 
 
-	public ARDroneController getArDroneController() {
+	public DrohnenController getArDroneController() {
 		return arDroneController;
 	}
 
