@@ -1,17 +1,13 @@
 package de.xtion.drone.gui;
 
-import java.awt.GridLayout;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
 import de.xtion.drone.model.EdgeModel;
 import de.xtion.drone.model.util.ModelEvent;
 import de.xtion.drone.model.util.ModelEventListener;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
 
 /**
  * This Panel provides the options to change the values in the EdgeModel at runtime.
@@ -45,9 +41,6 @@ public class EdgeAdjustment extends JPanel {
 		cannyThresholdTwoString = "Threshold 2: ";
 
 		//Slider
-		System.out.println(model.getCannyRadiusMin(true));
-		System.out.println(model.getCannyRadius(true));
-		System.out.println(model.getCannyRadiusMax(true));
 		cannnyRadiusSlider = new JSlider(JSlider.HORIZONTAL, (int) model.getCannyRadiusMin(true),
 		                                 (int) model.getCannyRadiusMax(true), (int) model.getCannyRadius(true));
 		cannnyThresholdOneSlider = new JSlider(JSlider.HORIZONTAL, 0, (int) model.getCannyThresholdOneMax(true),

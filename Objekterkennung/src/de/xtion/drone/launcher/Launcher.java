@@ -1,35 +1,7 @@
 package de.xtion.drone.launcher;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
-
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.border.Border;
-
-import org.opencv.core.Mat;
-
 import de.xtion.drone.ARDroneController;
-import de.xtion.drone.ColorOBJController;
+import de.xtion.drone.WebCamController;
 import de.xtion.drone.gui.ColorAdjustment;
 import de.xtion.drone.gui.EdgeAdjustment;
 import de.xtion.drone.interfaces.DrohnenController;
@@ -43,36 +15,43 @@ import de.xtion.drone.model.MainModel;
 import de.xtion.drone.model.util.ModelEvent;
 import de.xtion.drone.model.util.ModelEventListener;
 import de.xtion.drone.utils.ImageUtils;
+import org.opencv.core.Mat;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 
 public class Launcher {
-
-
-
 	static {
 		System.loadLibrary("opencv_java246");
 	}
-	private static final Border MONITOR_BORDER = BorderFactory.createLineBorder(Color.BLUE);
-	
-	private final ActionShowEdgeCam actionEdge = new ActionShowEdgeCam();
-	private final ActionShowColorTrack actionShowColorTrack = new ActionShowColorTrack();
-	private final ActionReset actionReset = new ActionReset();
-	private final ActionConnect actionConnect = new ActionConnect();
-	private final ActionShowLiveCam actionShowLiveCam = new ActionShowLiveCam();
 
+	private static final Border MONITOR_BORDER = BorderFactory.createLineBorder(Color.BLUE);
+
+	private final ActionShowEdgeCam    actionEdge           = new ActionShowEdgeCam();
+	private final ActionShowColorTrack actionShowColorTrack = new ActionShowColorTrack();
+	private final ActionReset          actionReset          = new ActionReset();
+	private final ActionConnect        actionConnect        = new ActionConnect();
+	private final ActionWebCam         actionWebCam         = new ActionWebCam();
+	private final ActionShowLiveCam    actionShowLiveCam    = new ActionShowLiveCam();
 
 	private final class ActionShowColorTrack extends AbstractAction {
 		public ActionShowColorTrack() {
 			putValue(NAME, "Zeige Farbtracking");
 			setEnabled(false);
 		}
-		
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			final ColorModel colorModel = mainModel.getColorModel();
 			ColorDetection colorDetection = new ColorDetection(colorModel);
 			getArDroneController().addOBJController(colorDetection);
 			colorModel.addModelEventListener(ColorModelEvents.COLOR_IMAGE, new ModelEventListener() {
-				
+
 				@Override
 				public void actionPerformed(ModelEvent event) {
 					Mat colorImage = colorModel.getColorImage();
@@ -83,15 +62,13 @@ public class Launcher {
 		}
 	}
 
-
 	private final class ActionShowEdgeCam extends AbstractAction {
 
 		public ActionShowEdgeCam() {
 			putValue(NAME, "Zeige Edgebild");
 			setEnabled(false);
 		}
-		
-		
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			final EdgeModel edgeModel = mainModel.getEdgeModel();
@@ -131,13 +108,14 @@ public class Launcher {
 
 
 	private final class ActionConnect extends AbstractAction {
-		
 		public ActionConnect() {
 			putValue(NAME, "Verbinde mit der Drohne");
 		}
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			arDroneController = new ARDroneController();
+
 			boolean connectToDrone = getArDroneController().connectToDrone();
 			
 			if(connectToDrone){
@@ -148,9 +126,19 @@ public class Launcher {
 		}
 	}
 
+	private  final class ActionWebCam extends AbstractAction {
+		private ActionWebCam() {
+			putValue(NAME,"Verbinde mit Webcam");
+		}
+
+		@Override public void actionPerformed(ActionEvent e) {
+			arDroneController = new WebCamController();
+			enableActions(true);
+		}
+	}
+
 
 	private final class ActionShowLiveCam extends AbstractAction {
-		
 		public ActionShowLiveCam() {
 			putValue(NAME, "Zeige Livebild");
 			setEnabled(false);
@@ -171,7 +159,7 @@ public class Launcher {
 		launcher.start();
 	}
 
-	private final DrohnenController arDroneController;
+	private DrohnenController arDroneController;
 	private JFrame jFrame;
 	private JButton colorTrackButton;
 	private JLabel monitor1;
@@ -208,8 +196,7 @@ public class Launcher {
 		mainModel = new MainModel();
 		
 		jFrame.setContentPane(getContent());
-		arDroneController = new ARDroneController();
-		
+
 		jFrame.addWindowListener(new WindowAdapter() {
 			
 			@Override
@@ -245,8 +232,8 @@ public class Launcher {
 		
 
 		JTabbedPane jTabbedPane = new JTabbedPane();
-		jTabbedPane.addTab("Steuerung Farbpanel", new JScrollPane( new ColorAdjustment(mainModel.getColorModel())));
-		jTabbedPane.addTab("Steuerung Edgepanel",new JScrollPane( new EdgeAdjustment(mainModel.getEdgeModel())));
+		jTabbedPane.addTab("Steuerung Farbpanel", new JScrollPane(new ColorAdjustment(mainModel.getColorModel())));
+		jTabbedPane.addTab("Steuerung Edgepanel", new JScrollPane(new EdgeAdjustment(mainModel.getEdgeModel())));
 		
 		
 		jPanel.add(jTabbedPane);
@@ -323,6 +310,7 @@ public class Launcher {
 		ret.add(menuDrone);
 		menuDrone.add(new JMenuItem(actionConnect));
 		menuDrone.add(new JMenuItem(actionReset));
+		menuDrone.add(new JMenuItem(actionWebCam));
 		
 		JMenu menuAnsicht = new JMenu();
 		menuAnsicht.setText("Ansicht");
@@ -334,31 +322,11 @@ public class Launcher {
 		return ret;
 	}
 
-
-
-	private JButton getButtonColoredTrack() {
-		if(colorTrackButton == null){
-			colorTrackButton = new JButton();
-			colorTrackButton.setText("Starte Farbtracking");
-			colorTrackButton.setEnabled(false);
-			colorTrackButton.addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					getArDroneController().addOBJController(new ColorOBJController());
-				}
-			});
-		}
-		return colorTrackButton;
-	}
-
-
 	private void enableActions(boolean b) {
 		actionShowLiveCam.setEnabled(b);
 		actionReset.setEnabled(b);
 		actionEdge.setEnabled(b);
 		actionShowColorTrack.setEnabled(b);
-		getButtonColoredTrack().setEnabled(b);
 	}
 
 

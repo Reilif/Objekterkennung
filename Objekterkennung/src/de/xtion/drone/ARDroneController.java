@@ -1,16 +1,14 @@
 package de.xtion.drone;
 
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-
 import de.xtion.drone.interfaces.DrohnenController;
 import de.xtion.drone.interfaces.Navdata;
 import de.xtion.drone.interfaces.OBJController;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.video.ImageListener;
+
+import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class ARDroneController implements DrohnenController, ImageListener {
 
