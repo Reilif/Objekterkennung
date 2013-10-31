@@ -1,16 +1,17 @@
 package de.xtion.drone.manipulation;
 
-import de.xtion.drone.interfaces.NavController;
-import de.xtion.drone.interfaces.OBJController;
-import de.xtion.drone.utils.ImageUtils;
+import java.awt.image.BufferedImage;
+
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
-import test.edge_detection.gui.EdgeModel;
-import test.edge_detection.objects.gui.ModelEvent;
-import test.edge_detection.objects.gui.ModelEventListener;
 
-import java.awt.image.BufferedImage;
+import de.xtion.drone.interfaces.NavController;
+import de.xtion.drone.interfaces.OBJController;
+import de.xtion.drone.model.EdgeModel;
+import de.xtion.drone.model.util.ModelEvent;
+import de.xtion.drone.model.util.ModelEventListener;
+import de.xtion.drone.utils.ImageUtils;
 
 /**
  * The class processes an Bufferd image obtained form the webcam and sets the BufferedImage in the Model to a black &

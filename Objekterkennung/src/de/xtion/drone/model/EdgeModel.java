@@ -1,8 +1,9 @@
 package de.xtion.drone.model;
 
-import test.edge_detection.objects.gui.Model;
 
 import java.awt.image.BufferedImage;
+
+import de.xtion.drone.model.util.Model;
 
 /**
  * Model of the GUI.

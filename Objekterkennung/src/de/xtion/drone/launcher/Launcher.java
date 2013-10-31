@@ -9,10 +9,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -24,13 +26,50 @@ import javax.swing.border.Border;
 
 import de.xtion.drone.ARDroneController;
 import de.xtion.drone.ColorOBJController;
+import de.xtion.drone.manipulation.EdgeDetection;
+import de.xtion.drone.model.EdgeModel;
+import de.xtion.drone.model.EdgeModel.EdgeModelEvent;
+import de.xtion.drone.model.MainModel;
+import de.xtion.drone.model.util.ModelEvent;
+import de.xtion.drone.model.util.ModelEventListener;
 
 public class Launcher {
 
+	static {
+		System.loadLibrary("opencv_java246");
+	}
+	
+	private final  ActionShowEdgeCam actionEdge = new ActionShowEdgeCam();
 	private static final Border MONITOR_BORDER = BorderFactory.createLineBorder(Color.BLUE);
 	private final ActionReset actionReset = new ActionReset();
 	private final ActionConnect actionConnect = new ActionConnect();
 	private final ActionShowLiveCam actionShowLiveCam = new ActionShowLiveCam();
+
+
+	private final class ActionShowEdgeCam extends AbstractAction {
+
+		public ActionShowEdgeCam() {
+			putValue(NAME, "Zeige Edgebild");
+			setEnabled(false);
+		}
+		
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			final EdgeModel edgeModel = mainModel.getEdgeModel();
+			EdgeDetection edgeDetection = new EdgeDetection(edgeModel);
+			getArDroneController().addOBJController(edgeDetection);
+			
+			edgeModel.addModelEventListener(EdgeModelEvent.EDGE_IMG, new ModelEventListener() {
+				
+				@Override
+				public void actionPerformed(ModelEvent event) {
+					BufferedImage edgeImage = edgeModel.getEdgeImage();
+					getMonitor2().setIcon(new ImageIcon(edgeImage));
+				}
+			});
+		}
+	}
 
 
 	private final class ActionReset extends AbstractAction {
@@ -114,6 +153,7 @@ public class Launcher {
 	private JLabel monitor2;
 	private JLabel monitor3;
 	private JLabel monitor0;
+	private final MainModel mainModel;
 	
 	public Launcher() {
 		
@@ -123,6 +163,7 @@ public class Launcher {
 		jFrame.setJMenuBar(getMenu());
 		
 		jFrame.setContentPane(getContent());
+		mainModel = new MainModel();
 		arDroneController = new ARDroneController();
 		
 		jFrame.addWindowListener(new WindowAdapter() {
@@ -234,6 +275,7 @@ public class Launcher {
 		ret.add(menuAnsicht);
 		
 		menuAnsicht.add(new JMenuItem(actionShowLiveCam));
+		menuAnsicht.add(new JMenuItem(actionEdge));
 		return ret;
 	}
 
@@ -259,6 +301,7 @@ public class Launcher {
 	private void enableActions(boolean b) {
 		actionShowLiveCam.setEnabled(b);
 		actionReset.setEnabled(b);
+		actionEdge.setEnabled(b);
 		getButtonColoredTrack().setEnabled(b);
 	}
 
