@@ -2,9 +2,8 @@ package de.xtion.drone.model;
 
 import de.xtion.drone.model.util.Model;
 
-
 public class MainModel extends Model<MainModel.MainModelEvents> {
-	private final EdgeModel edgeModel;
+	private final EdgeModel  edgeModel;
 	private final ColorModel colorModel;
 
 	public MainModel() {

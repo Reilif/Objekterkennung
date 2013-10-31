@@ -33,7 +33,6 @@ public class ColorDetection implements OBJController {
 		Mat camFrame = ImageUtils.bufferedImageToMat(data);
 		Imgproc.cvtColor(camFrame, tempOne, Imgproc.COLOR_BGR2HSV);
 
-
 		Core.inRange(tempOne, model.getLowerThreshold(), model.getUpperThreshold(), tempTwo);
 
 		Moments moments2 = Imgproc.moments(tempTwo, true);

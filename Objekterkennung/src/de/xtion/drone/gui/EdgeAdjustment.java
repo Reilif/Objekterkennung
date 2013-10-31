@@ -28,7 +28,7 @@ public class EdgeAdjustment extends JPanel {
 	private EdgeModel model;
 
 	/**
-	 * @param edgeModel  The parameter represents the EdgeModel the object is getting and setting information from/to
+	 * @param edgeModel The parameter represents the EdgeModel the object is getting and setting information from/to
 	 */
 	public EdgeAdjustment(EdgeModel edgeModel) {
 		super(new GridLayout(3, 2));
@@ -53,8 +53,8 @@ public class EdgeAdjustment extends JPanel {
 		cannnyThresholdTwoLabel = new JLabel(cannyThresholdTwoString);
 
 		//Scale
-		cannnyRadiusSlider.setMinorTickSpacing(scaleMinorSpacing/3);
-		cannnyRadiusSlider.setMajorTickSpacing(scaleMajorSpacing/3);
+		cannnyRadiusSlider.setMinorTickSpacing(scaleMinorSpacing / 3);
+		cannnyRadiusSlider.setMajorTickSpacing(scaleMajorSpacing / 3);
 		cannnyRadiusSlider.setPaintTicks(scalePaintTicks);
 
 		cannnyThresholdOneSlider.setMinorTickSpacing(scaleMinorSpacing);

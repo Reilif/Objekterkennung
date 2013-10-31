@@ -1,9 +1,8 @@
 package de.xtion.drone.model;
 
+import de.xtion.drone.model.util.Model;
 
 import java.awt.image.BufferedImage;
-
-import de.xtion.drone.model.util.Model;
 
 /**
  * Model of the GUI.
