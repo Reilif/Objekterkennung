@@ -1,4 +1,4 @@
-package test.test_gg;
+package test.color_detection_HSV;
 
 import org.opencv.core.*;
 import org.opencv.highgui.Highgui;

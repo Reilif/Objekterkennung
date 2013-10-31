@@ -1,4 +1,4 @@
-package test.test_gg;
+package test.color_detection_HSV;
 
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.video.ImageListener;
