@@ -67,7 +67,6 @@ public class DronenTest {
 //	        Thread.sleep(1000*5);
 //
 	        drone.getCommandManager().takeOff();
-
 	        Thread.sleep(1000*10);
 	        drone.getCommandManager().landing();
 	    }

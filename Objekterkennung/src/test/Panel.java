@@ -51,7 +51,7 @@ public class Panel extends JPanel {
 	}
 	
 	public static Mat bufferedImageToMat(BufferedImage bufImg){
-		Mat ret = new Mat(0,0, CvType.CV_8UC3);
+		Mat ret = new Mat(bufImg.getWidth(),bufImg.getHeight(), CvType.CV_8UC3);
 		
 		byte[] pixels = ((DataBufferByte) bufImg.getRaster().getDataBuffer()).getData();
 		ret.put(0, 0, pixels);
@@ -70,6 +70,7 @@ public class Panel extends JPanel {
 		int cols = matrix.cols();
 		int rows = matrix.rows();
 		int elemSize = (int) matrix.elemSize();
+
 		byte[] data = new byte[cols * rows * elemSize];
 		int type;
 		matrix.get(0, 0, data);
