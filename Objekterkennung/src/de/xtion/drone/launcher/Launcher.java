@@ -22,28 +22,65 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.border.Border;
+
+import org.opencv.core.Mat;
 
 import de.xtion.drone.ARDroneController;
 import de.xtion.drone.ColorOBJController;
+import de.xtion.drone.gui.ColorAdjustment;
+import de.xtion.drone.gui.EdgeAdjustment;
+import de.xtion.drone.manipulation.ColorDetection;
 import de.xtion.drone.manipulation.EdgeDetection;
+import de.xtion.drone.model.ColorModel;
+import de.xtion.drone.model.ColorModel.ColorModelEvents;
 import de.xtion.drone.model.EdgeModel;
 import de.xtion.drone.model.EdgeModel.EdgeModelEvent;
 import de.xtion.drone.model.MainModel;
 import de.xtion.drone.model.util.ModelEvent;
 import de.xtion.drone.model.util.ModelEventListener;
+import de.xtion.drone.utils.ImageUtils;
 
 public class Launcher {
+
+
 
 	static {
 		System.loadLibrary("opencv_java246");
 	}
+	private static final Border MONITOR_BORDER = BorderFactory.createLineBorder(Color.BLUE);
 	
 	private final  ActionShowEdgeCam actionEdge = new ActionShowEdgeCam();
-	private static final Border MONITOR_BORDER = BorderFactory.createLineBorder(Color.BLUE);
+	private final ActionShowColorTrack actionShowColorTrack = new ActionShowColorTrack();
 	private final ActionReset actionReset = new ActionReset();
 	private final ActionConnect actionConnect = new ActionConnect();
 	private final ActionShowLiveCam actionShowLiveCam = new ActionShowLiveCam();
+
+
+	private final class ActionShowColorTrack extends AbstractAction {
+		public ActionShowColorTrack() {
+			putValue(NAME, "Zeige Farbtracking");
+			setEnabled(false);
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			final ColorModel colorModel = mainModel.getColorModel();
+			ColorDetection colorDetection = new ColorDetection(colorModel);
+			getArDroneController().addOBJController(colorDetection);
+			colorModel.addModelEventListener(ColorModelEvents.COLOR_IMAGE, new ModelEventListener() {
+				
+				@Override
+				public void actionPerformed(ModelEvent event) {
+					Mat colorImage = colorModel.getColorImage();
+					BufferedImage matToBufferedImage = ImageUtils.matToBufferedImage(colorImage);
+					getMonitor1().setIcon(new ImageIcon(matToBufferedImage));
+				}
+			});
+		}
+	}
 
 
 	private final class ActionShowEdgeCam extends AbstractAction {
@@ -57,8 +94,16 @@ public class Launcher {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			final EdgeModel edgeModel = mainModel.getEdgeModel();
-			EdgeDetection edgeDetection = new EdgeDetection(edgeModel);
+			final EdgeDetection edgeDetection = new EdgeDetection(edgeModel);
 			getArDroneController().addOBJController(edgeDetection);
+//			
+//			mainModel.getColorModel().addModelEventListener(ColorModelEvents.COLOR_IMAGE, new ModelEventListener() {
+//				
+//				@Override
+//				public void actionPerformed(ModelEvent event) {
+//					edgeDetection.processImage(ImageUtils.matToBufferedImage(mainModel.getColorModel().getColorImage()));
+//				}
+//			});
 			
 			edgeModel.addModelEventListener(EdgeModelEvent.EDGE_IMG, new ModelEventListener() {
 				
@@ -125,9 +170,7 @@ public class Launcher {
 		launcher.start();
 	}
 
-	private JButton connectButton;
 	private final ARDroneController arDroneController;
-	private JButton vidButton;
 	private JFrame jFrame;
 	private JButton colorTrackButton;
 	private JLabel monitor1;
@@ -161,9 +204,9 @@ public class Launcher {
 		jFrame.setTitle("Launcher XTion Drone");
 		
 		jFrame.setJMenuBar(getMenu());
+		mainModel = new MainModel();
 		
 		jFrame.setContentPane(getContent());
-		mainModel = new MainModel();
 		arDroneController = new ARDroneController();
 		
 		jFrame.addWindowListener(new WindowAdapter() {
@@ -184,7 +227,7 @@ public class Launcher {
 		JPanel jPanel = new JPanel();
 		jPanel.setLayout(new BorderLayout());
 		
-		jPanel.add(getCenterPanel(), BorderLayout.CENTER);
+		jPanel.add(new JScrollPane(getCenterPanel()), BorderLayout.CENTER);
 		jPanel.add(getSettingsPanel(), BorderLayout.WEST);
 		jPanel.add(getInformationPanel(), BorderLayout.SOUTH);
 		return jPanel;
@@ -197,7 +240,16 @@ public class Launcher {
 
 
 	private Component getSettingsPanel() {
-		return new JPanel();
+		JPanel jPanel = new JPanel();
+		
+
+		JTabbedPane jTabbedPane = new JTabbedPane();
+		jTabbedPane.addTab("Steuerung Farbpanel", new JScrollPane( new ColorAdjustment(mainModel.getColorModel())));
+		jTabbedPane.addTab("Steuerung Edgepanel",new JScrollPane( new EdgeAdjustment(mainModel.getEdgeModel())));
+		
+		
+		jPanel.add(jTabbedPane);
+		return jPanel;
 	}
 
 
@@ -252,6 +304,7 @@ public class Launcher {
 			}
 		};
 		
+		
 		jPanel.add(monitor0);
 		jPanel.add(monitor1);
 		jPanel.add(monitor2);
@@ -276,6 +329,7 @@ public class Launcher {
 		
 		menuAnsicht.add(new JMenuItem(actionShowLiveCam));
 		menuAnsicht.add(new JMenuItem(actionEdge));
+		menuAnsicht.add(new JMenuItem(actionShowColorTrack));
 		return ret;
 	}
 
@@ -302,6 +356,7 @@ public class Launcher {
 		actionShowLiveCam.setEnabled(b);
 		actionReset.setEnabled(b);
 		actionEdge.setEnabled(b);
+		actionShowColorTrack.setEnabled(b);
 		getButtonColoredTrack().setEnabled(b);
 	}
 

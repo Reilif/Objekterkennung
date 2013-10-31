@@ -1,13 +1,17 @@
 package de.xtion.drone.gui;
 
-import test.edge_detection.gui.EdgeModel;
-import test.edge_detection.objects.gui.ModelEvent;
-import test.edge_detection.objects.gui.ModelEventListener;
+import java.awt.GridLayout;
 
-import javax.swing.*;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.*;
+
+import de.xtion.drone.model.EdgeModel;
+import de.xtion.drone.model.util.ModelEvent;
+import de.xtion.drone.model.util.ModelEventListener;
 
 /**
  * This Panel provides the options to change the values in the EdgeModel at runtime.
