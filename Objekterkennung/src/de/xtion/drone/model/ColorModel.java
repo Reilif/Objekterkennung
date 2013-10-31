@@ -81,6 +81,7 @@ public class ColorModel extends Model<ColorModel.ColorModelEvents> {
 
 	public void sethLower(int hLower) {
 		this.hLower = hLower;
+		calculateLowerScalar();
 	}
 
 	public int getsLower() {
@@ -89,6 +90,7 @@ public class ColorModel extends Model<ColorModel.ColorModelEvents> {
 
 	public void setsLower(int sLower) {
 		this.sLower = sLower;
+		calculateLowerScalar();
 	}
 
 	public int getvLower() {
@@ -97,6 +99,7 @@ public class ColorModel extends Model<ColorModel.ColorModelEvents> {
 
 	public void setvLower(int vLower) {
 		this.vLower = vLower;
+		calculateLowerScalar();
 	}
 
 	public int gethUpper() {
@@ -105,6 +108,7 @@ public class ColorModel extends Model<ColorModel.ColorModelEvents> {
 
 	public void sethUpper(int hUpper) {
 		this.hUpper = hUpper;
+		calculateUpperScalar();
 	}
 
 	public int getsUpper() {
@@ -113,6 +117,7 @@ public class ColorModel extends Model<ColorModel.ColorModelEvents> {
 
 	public void setsUpper(int sUpper) {
 		this.sUpper = sUpper;
+		calculateUpperScalar();
 	}
 
 	public int getvUpper() {
@@ -121,6 +126,7 @@ public class ColorModel extends Model<ColorModel.ColorModelEvents> {
 
 	public void setvUpper(int vUpper) {
 		this.vUpper = vUpper;
+		calculateUpperScalar();
 	}
 
 	public Scalar getLowerThreshold() {
@@ -166,6 +172,16 @@ public class ColorModel extends Model<ColorModel.ColorModelEvents> {
 	public void setColorImage(Mat colorImage) {
 		this.colorImage = colorImage;
 		fireModelEvent(ColorModelEvents.COLOR_IMAGE);
+	}
+
+	private void calculateLowerScalar() {
+		lowerThreshold.set(new double[]{hLower, sLower, vLower});
+		fireModelEvent(ColorModelEvents.LOWER_THR);
+	}
+
+	private void calculateUpperScalar() {
+		upperThreshold.set(new double[]{hUpper, sUpper, vUpper});
+		fireModelEvent(ColorModelEvents.UPPER_THR);
 	}
 
 	public enum ColorModelEvents {
