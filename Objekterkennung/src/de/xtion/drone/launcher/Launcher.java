@@ -28,8 +28,8 @@ import javax.swing.border.Border;
 
 import org.opencv.core.Mat;
 
-import de.xtion.drone.ARDroneController;
 import de.xtion.drone.ColorOBJController;
+import de.xtion.drone.WebcamController;
 import de.xtion.drone.gui.ColorAdjustment;
 import de.xtion.drone.gui.EdgeAdjustment;
 import de.xtion.drone.interfaces.DrohnenController;
@@ -208,7 +208,8 @@ public class Launcher {
 		mainModel = new MainModel();
 		
 		jFrame.setContentPane(getContent());
-		arDroneController = new ARDroneController();
+		arDroneController = new WebcamController();
+//		arDroneController = new ARDroneController();
 		
 		jFrame.addWindowListener(new WindowAdapter() {
 			
