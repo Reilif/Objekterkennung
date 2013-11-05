@@ -14,7 +14,8 @@ public abstract class Model<T extends Enum<T>> {
 	final HashMap<T, ArrayList<ModelEventListener>> listener;
 
 	/**
-	 * @param eventNames The parameter eventNames represents an array of enum Objects that are used for the add/fire/remove
+	 * @param eventNames The parameter eventNames represents an array of enum Objects that are used for the
+	 *                   add/fire/remove
 	 *                   methods
 	 */
 	public Model(T[] eventNames) {

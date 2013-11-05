@@ -1,7 +1,9 @@
 package de.xtion.drone.utils;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
 import java.awt.image.DataBufferByte;
+import java.awt.image.WritableRaster;
 
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -9,8 +11,20 @@ import org.opencv.core.Mat;
 public class ImageUtils {
 
 	/**
+	 * Erzeugt eine Kopie eines BufferedImages
+	 * @param bi
+	 * @return
+	 */
+	public static BufferedImage deepCopy(BufferedImage bi) {
+		ColorModel cm = bi.getColorModel();
+		boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+		WritableRaster raster = bi.copyData(null);
+		return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+	}
+
+	/**
 	 * Wandellt ein Java {@link BufferedImage} in eine openCV {@link Mat}, damit
-	 * mit dieser Berechnungen durchgeführt werden können.
+	 * mit dieser Berechnungen durchgefï¿½hrt werden kï¿½nnen.
 	 * 
 	 * @param bufImg
 	 * @return
@@ -55,6 +69,9 @@ public class ImageUtils {
 			}
 			break;
 		default:
+			return null;
+		}
+		if(cols <= 0 || rows <= 0){
 			return null;
 		}
 		BufferedImage image2 = new BufferedImage(cols, rows, type);

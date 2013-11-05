@@ -51,9 +51,17 @@ public class EdgeDetection implements OBJController {
 	//Source @ http://docs.opencv.org/doc/tutorials/imgproc/imgtrans/canny_detector/canny_detector.html#canny-detector
 	@Override public void processImage(BufferedImage data) {
 		Mat camFrame = ImageUtils.bufferedImageToMat(data);
-		Imgproc.cvtColor(camFrame, tempOne, Imgproc.COLOR_BGR2GRAY);   //Convert to grey
+		calculate(camFrame, true);
+	}
+
+	public void calculate(Mat camFrame, boolean cvtColor) {
+		if(cvtColor){
+			Imgproc.cvtColor(camFrame, tempOne, Imgproc.COLOR_BGR2GRAY);   //Convert to grey
+		}
 		Imgproc.blur(tempOne, tempTwo, blurRadius);                    //Blur
 		Imgproc.Canny(tempTwo, tempTwo, model.getCannyThresholdOne(), model.getCannyThresholdTwo());//edge detection
+		
+		model.setEdgeMat(tempTwo);
 		model.setEdgeImage(ImageUtils.matToBufferedImage(tempTwo));
 	}
 

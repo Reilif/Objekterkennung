@@ -33,19 +33,22 @@ public class ImagePanel extends JPanel {
 		model.addModelEventListener(EdgeModel.EdgeModelEvent.V_WIDTH, sizeListener);
 		model.addModelEventListener(EdgeModel.EdgeModelEvent.V_HEIGHT, sizeListener);
 
-		model.addModelEventListener(EdgeModel.EdgeModelEvent.EDGE_IMG, new ModelEventListener() {  //repaint the frame when a new video image is available
-			@Override public void actionPerformed(ModelEvent event) {
-				SwingUtilities.invokeLater(new Runnable() {   //FIXME reusable - create only once?
-					@Override public void run() {
-						repaint();
-					}
-				});
-			}
-		});
+		model.addModelEventListener(EdgeModel.EdgeModelEvent.EDGE_IMG,
+		                            new ModelEventListener() {  //repaint the frame when a new video image is available
+			                            @Override public void actionPerformed(ModelEvent event) {
+				                            SwingUtilities
+						                            .invokeLater(new Runnable() {   //FIXME reusable - create only once?
+							                            @Override public void run() {
+								                            repaint();
+							                            }
+						                            });
+			                            }
+		                            });
 	}
 
 	/**
 	 * Paints the BufferedImage from the EdgeModel
+	 *
 	 * @param g The passed down graphics object
 	 */
 	@Override protected void paintComponent(Graphics g) {

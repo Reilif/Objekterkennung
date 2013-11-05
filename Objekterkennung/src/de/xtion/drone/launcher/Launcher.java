@@ -6,7 +6,6 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -28,13 +27,15 @@ import javax.swing.border.Border;
 
 import org.opencv.core.Mat;
 
-import de.xtion.drone.ColorOBJController;
-import de.xtion.drone.WebcamController;
+import de.xtion.drone.WebCamController;
 import de.xtion.drone.gui.ColorAdjustment;
 import de.xtion.drone.gui.EdgeAdjustment;
 import de.xtion.drone.interfaces.DrohnenController;
+import de.xtion.drone.manipulation.CircleDetection;
 import de.xtion.drone.manipulation.ColorDetection;
 import de.xtion.drone.manipulation.EdgeDetection;
+import de.xtion.drone.model.CircleModel;
+import de.xtion.drone.model.CircleModel.CircleModelEvent;
 import de.xtion.drone.model.ColorModel;
 import de.xtion.drone.model.ColorModel.ColorModelEvents;
 import de.xtion.drone.model.EdgeModel;
@@ -55,6 +56,7 @@ public class Launcher {
 	
 	private final ActionShowEdgeCam actionEdge = new ActionShowEdgeCam();
 	private final ActionShowColorTrack actionShowColorTrack = new ActionShowColorTrack();
+	private final ActionShowCircleTrack actionShowCircleTrack = new ActionShowCircleTrack();
 	private final ActionReset actionReset = new ActionReset();
 	private final ActionConnect actionConnect = new ActionConnect();
 	private final ActionShowLiveCam actionShowLiveCam = new ActionShowLiveCam();
@@ -82,6 +84,29 @@ public class Launcher {
 			});
 		}
 	}
+	
+	private final class ActionShowCircleTrack extends AbstractAction {
+		public ActionShowCircleTrack() {
+			putValue(NAME, "Zeige Kreisbild");
+			setEnabled(false);
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			final CircleModel circleModel = mainModel.getCircleModel();
+			final CircleDetection circleDetection = new CircleDetection(circleModel, mainModel.getColorModel(), mainModel.getEdgeModel());
+			getArDroneController().addOBJController(circleDetection);
+			
+			circleModel.addModelEventListener(CircleModelEvent.CIRCLE_IMG, new ModelEventListener() {
+				
+				@Override
+				public void actionPerformed(ModelEvent event) {
+					BufferedImage colorImage = circleModel.getCircleImage();
+					getMonitor3().setIcon(new ImageIcon(colorImage));
+				}
+			});
+		}
+	}
 
 
 	private final class ActionShowEdgeCam extends AbstractAction {
@@ -97,21 +122,14 @@ public class Launcher {
 			final EdgeModel edgeModel = mainModel.getEdgeModel();
 			final EdgeDetection edgeDetection = new EdgeDetection(edgeModel);
 			getArDroneController().addOBJController(edgeDetection);
-//			
-//			mainModel.getColorModel().addModelEventListener(ColorModelEvents.COLOR_IMAGE, new ModelEventListener() {
-//				
-//				@Override
-//				public void actionPerformed(ModelEvent event) {
-//					edgeDetection.processImage(ImageUtils.matToBufferedImage(mainModel.getColorModel().getColorImage()));
-//				}
-//			});
-			
 			edgeModel.addModelEventListener(EdgeModelEvent.EDGE_IMG, new ModelEventListener() {
 				
 				@Override
 				public void actionPerformed(ModelEvent event) {
 					BufferedImage edgeImage = edgeModel.getEdgeImage();
-					getMonitor2().setIcon(new ImageIcon(edgeImage));
+					if(edgeImage != null){
+						getMonitor2().setIcon(new ImageIcon(edgeImage));
+					}
 				}
 			});
 		}
@@ -208,7 +226,8 @@ public class Launcher {
 		mainModel = new MainModel();
 		
 		jFrame.setContentPane(getContent());
-		arDroneController = new WebcamController();
+		arDroneController = new WebCamController();
+		
 //		arDroneController = new ARDroneController();
 		
 		jFrame.addWindowListener(new WindowAdapter() {
@@ -332,25 +351,8 @@ public class Launcher {
 		menuAnsicht.add(new JMenuItem(actionShowLiveCam));
 		menuAnsicht.add(new JMenuItem(actionEdge));
 		menuAnsicht.add(new JMenuItem(actionShowColorTrack));
+		menuAnsicht.add(new JMenuItem(actionShowCircleTrack));
 		return ret;
-	}
-
-
-
-	private JButton getButtonColoredTrack() {
-		if(colorTrackButton == null){
-			colorTrackButton = new JButton();
-			colorTrackButton.setText("Starte Farbtracking");
-			colorTrackButton.setEnabled(false);
-			colorTrackButton.addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					getArDroneController().addOBJController(new ColorOBJController());
-				}
-			});
-		}
-		return colorTrackButton;
 	}
 
 
@@ -359,7 +361,7 @@ public class Launcher {
 		actionReset.setEnabled(b);
 		actionEdge.setEnabled(b);
 		actionShowColorTrack.setEnabled(b);
-		getButtonColoredTrack().setEnabled(b);
+		actionShowCircleTrack.setEnabled(b);
 	}
 
 

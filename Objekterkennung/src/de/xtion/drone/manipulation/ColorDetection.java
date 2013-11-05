@@ -1,15 +1,16 @@
 package de.xtion.drone.manipulation;
 
-import de.xtion.drone.interfaces.NavController;
-import de.xtion.drone.interfaces.OBJController;
-import de.xtion.drone.model.ColorModel;
-import de.xtion.drone.utils.ImageUtils;
+import java.awt.image.BufferedImage;
+
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.imgproc.Moments;
 
-import java.awt.image.BufferedImage;
+import de.xtion.drone.interfaces.NavController;
+import de.xtion.drone.interfaces.OBJController;
+import de.xtion.drone.model.ColorModel;
+import de.xtion.drone.utils.ImageUtils;
 
 public class ColorDetection implements OBJController {
 	private ColorModel model;
@@ -31,8 +32,11 @@ public class ColorDetection implements OBJController {
 
 	@Override public void processImage(BufferedImage data) {
 		Mat camFrame = ImageUtils.bufferedImageToMat(data);
-		Imgproc.cvtColor(camFrame, tempOne, Imgproc.COLOR_BGR2HSV);
+		calculate(camFrame);
+	}
 
+	public void calculate(Mat camFrame) {
+		Imgproc.cvtColor(camFrame, tempOne, Imgproc.COLOR_BGR2HSV);
 
 		Core.inRange(tempOne, model.getLowerThreshold(), model.getUpperThreshold(), tempTwo);
 

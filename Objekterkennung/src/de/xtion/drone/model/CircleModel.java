@@ -11,7 +11,7 @@ import de.xtion.drone.model.util.Model;
  * The class provides all GUI objects with information and events - it's pretty "blown up" because of the getter and
  * setter and an ugly workaround of integer restriction in sliders - nothing special happens here.
  */
-public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
+public class CircleModel extends Model<CircleModel.CircleModelEvent> {
 	private int           videoWidth;
 	private int           videoHeight;
 	private double        cannyRadius;
@@ -23,13 +23,13 @@ public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
 	private double        cannyThresholdTwoMax;
 	private int           sliderMultiplier;
 	private BufferedImage edgeImage;
-	private Mat mat;
+	private Mat circles;
 
 	/**
 	 * Initialisation of all values
 	 */
-	public EdgeModel() {
-		super(EdgeModel.EdgeModelEvent.values());
+	public CircleModel() {
+		super(CircleModel.CircleModelEvent.values());
 
 		sliderMultiplier = 100;
 
@@ -41,7 +41,7 @@ public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
 		cannyRadiusMax = 30;
 
 		cannyThresholdOne = 50;
-		cannyThresholdOneMax = 100;
+		cannyThresholdOneMax = 200;
 
 		cannyThresholdTwo = cannyThresholdOne * cannyRadius;
 		cannyThresholdTwoMax = cannyThresholdOneMax * cannyRadius;
@@ -81,7 +81,7 @@ public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
 			cannyThresholdOneMax /= sliderMultiplier;
 		}
 		this.cannyThresholdOneMax = cannyThresholdOneMax * cannyRadius;
-		fireModelEvent(EdgeModelEvent.CAN_THR_ONE_MAX);
+		fireModelEvent(CircleModelEvent.CAN_THR_ONE_MAX);
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
 			cannyThresholdTwoMax /= sliderMultiplier;
 		}
 		this.cannyThresholdTwoMax = cannyThresholdTwoMax * cannyRadius;
-		fireModelEvent(EdgeModelEvent.CAN_THR_TWO_MAX);
+		fireModelEvent(CircleModelEvent.CAN_THR_TWO_MAX);
 	}
 
 	/**
@@ -155,7 +155,7 @@ public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
 			cannyThresholdOne /= sliderMultiplier;
 		}
 		this.cannyThresholdOne = cannyThresholdOne;
-		fireModelEvent(EdgeModelEvent.CAN_THR_ONE);
+		fireModelEvent(CircleModelEvent.CAN_THR_ONE);
 	}
 
 	/**
@@ -192,7 +192,7 @@ public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
 			cannyThresholdTwo /= sliderMultiplier;
 		}
 		this.cannyThresholdTwo = cannyThresholdTwo;
-		fireModelEvent(EdgeModelEvent.CAN_THR_TWO);
+		fireModelEvent(CircleModelEvent.CAN_THR_TWO);
 	}
 
 	/**
@@ -207,7 +207,7 @@ public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
 	 */
 	public void setVideoWidth(int videoWidth) {
 		this.videoWidth = videoWidth;
-		fireModelEvent(EdgeModelEvent.V_WIDTH);
+		fireModelEvent(CircleModelEvent.V_WIDTH);
 	}
 
 	/**
@@ -222,22 +222,22 @@ public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
 	 */
 	public void setVideoHeight(int videoHeight) {
 		this.videoHeight = videoHeight;
-		fireModelEvent(EdgeModelEvent.V_HEIGHT);
+		fireModelEvent(CircleModelEvent.V_HEIGHT);
 	}
 
 	/**
 	 * @return The return value is the result of the Canny function (edge detection)
 	 */
-	public BufferedImage getEdgeImage() {
+	public BufferedImage getCircleImage() {
 		return edgeImage;
 	}
 
 	/**
 	 * @param edgeImage The value represents the new BufferedImage from teh edge detection
 	 */
-	public void setEdgeImage(BufferedImage edgeImage) {
+	public void setCircleImage(BufferedImage edgeImage) {
 		this.edgeImage = edgeImage;
-		fireModelEvent(EdgeModelEvent.EDGE_IMG);
+		fireModelEvent(CircleModelEvent.CIRCLE_IMG);
 	}
 
 	/**
@@ -277,7 +277,7 @@ public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
 		}
 		this.cannyRadius = cannyRadius;
 		setCannyThresholdTwoMax(cannyThresholdOneMax);
-		fireModelEvent(EdgeModelEvent.CAN_RADIUS);
+		fireModelEvent(CircleModelEvent.CAN_RADIUS);
 	}
 
 	/**
@@ -319,17 +319,17 @@ public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
 	/**
 	 * Enum list used for the events of the EdgeModel
 	 */
-	public enum EdgeModelEvent {
-		V_WIDTH, V_HEIGHT, EDGE_IMG, CAN_RADIUS, CAN_RADIUS_MAX, CAN_THR_ONE, CAN_THR_ONE_MAX, CAN_THR_TWO,
-		CAN_THR_TWO_MAX, EDGE_MAT
+	public enum CircleModelEvent {
+		V_WIDTH, V_HEIGHT, CIRCLE_IMG, CAN_RADIUS, CAN_RADIUS_MAX, CAN_THR_ONE, CAN_THR_ONE_MAX, CAN_THR_TWO,
+		CAN_THR_TWO_MAX, CIRCLES
 	}
 
-	public void setEdgeMat(Mat tempTwo) {
-		this.mat = tempTwo;
-		fireModelEvent(EdgeModelEvent.EDGE_MAT);
+	public void setCircles(Mat circles) {
+		this.circles = circles;
+		fireModelEvent(CircleModelEvent.CIRCLES);
 	}
 	
-	public Mat getEdgeMat() {
-		return mat;
+	public Mat getCircles() {
+		return circles;
 	}
 }
