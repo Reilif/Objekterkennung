@@ -83,8 +83,8 @@ public class CircleDetection implements OBJController {
 		Imgproc.Canny(tempTwo, edges, em.getCannyThresholdOne(),
 				em.getCannyThresholdTwo());// edge detection
 		
-		Imgproc.HoughCircles(edges, circles, Imgproc.CV_HOUGH_GRADIENT, 2d,
-				tempTwo.cols()/4, em.getCannyThresholdTwo(),em.getCannyThresholdOne(), 5, 100);
+		Imgproc.HoughCircles(edges, circles, Imgproc.CV_HOUGH_GRADIENT, model.getDp(),
+				tempTwo.cols()/4, em.getCannyThresholdTwo(),em.getCannyThresholdOne(), model.getCircleMinSize(), model.getCircleMaxSize());
 
 		model.setCircles(circles);
 		
