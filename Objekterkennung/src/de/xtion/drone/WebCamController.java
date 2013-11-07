@@ -1,18 +1,24 @@
 package de.xtion.drone;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+
+import org.opencv.core.Mat;
+import org.opencv.highgui.VideoCapture;
+
 import de.xtion.drone.interfaces.DrohnenController;
 import de.xtion.drone.interfaces.Navdata;
 import de.xtion.drone.interfaces.OBJController;
 import de.xtion.drone.utils.ImageUtils;
-import org.opencv.core.Mat;
-import org.opencv.highgui.VideoCapture;
-
-import javax.swing.*;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
 public class WebCamController implements DrohnenController {
-	private ArrayList<OBJController> objControllers = new ArrayList<OBJController>();
+	private List<OBJController> objControllers = Collections.synchronizedList(new ArrayList<OBJController>());
 	private JLabel        monitor;
 	private BufferedImage image;
 	private Thread        video;
@@ -29,11 +35,28 @@ public class WebCamController implements DrohnenController {
 						if(!webcamImage.empty()) {
 							image = ImageUtils.matToBufferedImage(webcamImage);
 
-							if(monitor != null && image != null) {
-								monitor.setIcon(new ImageIcon(image));
-
-								for(OBJController o : objControllers) {
-									o.processImage(image);
+							if(image != null){
+								synchronized (objControllers) {
+									for(OBJController o : objControllers) {
+										o.processImage(image);
+									}
+								}
+								if(monitor != null && image != null) {
+									
+									
+									int height = image.getHeight();
+									int width = image.getWidth();
+									
+									double div = (double) height / (double) width;
+									
+									Image scaled;
+									if(monitor.getWidth()*div > monitor.getHeight()){
+										scaled = image.getScaledInstance(monitor.getWidth(), (int) (monitor.getWidth()*div), BufferedImage.SCALE_FAST);
+									}else{
+										scaled = image.getScaledInstance((int) (monitor.getHeight()/div), monitor.getHeight(), BufferedImage.SCALE_FAST);
+									}
+									
+									monitor.setIcon(new ImageIcon(scaled));
 								}
 							}
 						} else {
