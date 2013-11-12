@@ -36,7 +36,7 @@ public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
 		videoWidth = 200;
 		videoHeight = 200;
 
-		cannyRadius = 1;
+		cannyRadius = 2;
 		cannyRadiusMin = 1;
 		cannyRadiusMax = 30;
 

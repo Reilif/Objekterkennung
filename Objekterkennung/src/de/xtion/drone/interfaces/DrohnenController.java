@@ -1,6 +1,6 @@
 package de.xtion.drone.interfaces;
 
-import javax.swing.*;
+import javax.swing.JLabel;
 
 public interface DrohnenController {
 
@@ -15,4 +15,12 @@ public interface DrohnenController {
 	public boolean connectToDrone();
 
 	public void resetDrone();
+	
+	public void launch();
+	
+	public void land();
+
+	public void turnLeft();
+
+	public void turnRight();
 }

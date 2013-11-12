@@ -1,7 +1,6 @@
 package de.xtion.drone.launcher;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -9,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -23,10 +21,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.border.Border;
 
 import org.opencv.core.Mat;
 
+import de.xtion.drone.ARDroneController;
 import de.xtion.drone.WebCamController;
 import de.xtion.drone.gui.ColorAdjustment;
 import de.xtion.drone.gui.EdgeAdjustment;
@@ -36,6 +34,7 @@ import de.xtion.drone.interfaces.OBJController;
 import de.xtion.drone.manipulation.CircleDetection;
 import de.xtion.drone.manipulation.ColorDetection;
 import de.xtion.drone.manipulation.EdgeDetection;
+import de.xtion.drone.manipulation.NavController2D;
 import de.xtion.drone.model.CircleModel;
 import de.xtion.drone.model.CircleModel.CircleModelEvent;
 import de.xtion.drone.model.ColorModel;
@@ -45,6 +44,7 @@ import de.xtion.drone.model.EdgeModel.EdgeModelEvent;
 import de.xtion.drone.model.MainModel;
 import de.xtion.drone.model.util.ModelEvent;
 import de.xtion.drone.model.util.ModelEventListener;
+import de.xtion.drone.motioncontroller.MoveController;
 import de.xtion.drone.utils.ImageUtils;
 
 public class Launcher {
@@ -52,15 +52,19 @@ public class Launcher {
 	static {
 		System.loadLibrary("opencv_java246");
 	}
-	private static final Border MONITOR_BORDER = BorderFactory
-			.createLineBorder(Color.BLUE);
 
 	private final ActionShowEdgeCam actionEdge = new ActionShowEdgeCam();
 	private final ActionShowColorTrack actionShowColorTrack = new ActionShowColorTrack();
 	private final ActionShowCircleTrack actionShowCircleTrack = new ActionShowCircleTrack();
 	private final ActionReset actionReset = new ActionReset();
+	private final ActionLaunch actionLaunch = new ActionLaunch();
+	private final ActionLand actionLand = new ActionLand();
+	private final ActionFolgeKreis actionFolgekreis = new ActionFolgeKreis();
 	private final ActionConnect actionConnect = new ActionConnect();
 	private final ActionShowLiveCam actionShowLiveCam = new ActionShowLiveCam();
+	private final ActionMoveController actionMoveController = new ActionMoveController();
+
+	private MoveController mvController;
 
 	private final class Monitor extends JLabel {
 
@@ -72,7 +76,7 @@ public class Launcher {
 		}
 
 		public void setImage(BufferedImage bim) {
-			if (bim != null) {
+			if (bim != null && isVisible()) {
 				int height = bim.getHeight();
 				int width = bim.getWidth();
 
@@ -113,7 +117,7 @@ public class Launcher {
 		public void actionPerformed(ActionEvent e) {
 			final ColorModel colorModel = mainModel.getColorModel();
 			ColorDetection colorDetection = new ColorDetection(colorModel);
-			getArDroneController().addOBJController(colorDetection);
+			webcamController.addOBJController(colorDetection);
 			colorModel.addModelEventListener(ColorModelEvents.COLOR_IMAGE,
 					new ModelEventListener() {
 
@@ -129,7 +133,9 @@ public class Launcher {
 		}
 	}
 
+	private CircleDetection circleDetection;
 	private final class ActionShowCircleTrack extends AbstractAction {
+
 		public ActionShowCircleTrack() {
 			putValue(NAME, "Zeige Kreisbild");
 			setEnabled(false);
@@ -138,11 +144,13 @@ public class Launcher {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			final CircleModel circleModel = mainModel.getCircleModel();
-			final CircleDetection circleDetection = new CircleDetection(
+			circleDetection = new CircleDetection(
 					circleModel, mainModel.getColorModel(),
 					mainModel.getEdgeModel());
-			getArDroneController().addOBJController(circleDetection);
+			webcamController.addOBJController(circleDetection);
 
+//			starteObjektsteuerung();
+			
 			circleModel.addModelEventListener(CircleModelEvent.CIRCLE_IMG,
 					new ModelEventListener() {
 
@@ -189,6 +197,54 @@ public class Launcher {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			getArDroneController().resetDrone();
+		}
+	}
+	
+	private final class ActionLaunch extends AbstractAction {
+		public ActionLaunch() {
+			putValue(NAME, "Startet Drohne");
+			setEnabled(false);
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			getArDroneController().launch();
+		}
+	}
+	
+	private final class ActionFolgeKreis extends AbstractAction {
+		
+		 public ActionFolgeKreis() {
+			putValue(NAME, "Startet Drohne");
+			setEnabled(false);
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			starteObjektsteuerung();
+		}
+	}
+	
+	private final class ActionLand extends AbstractAction {
+		public ActionLand() {
+			putValue(NAME, "Landet Drohne");
+			setEnabled(false);
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			getArDroneController().land();
+		}
+	}
+
+	private final class ActionMoveController extends AbstractAction {
+		public ActionMoveController() {
+			putValue(NAME, "Aktiviert MoveController");
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			getMoveController();
 		}
 	}
 
@@ -240,6 +296,14 @@ public class Launcher {
 		launcher.start();
 	}
 
+	public MoveController getMoveController() {
+		if(mvController == null){
+			mvController = new MoveController(getArDroneController(), this);
+		}
+		
+		return mvController;
+	}
+
 	private final DrohnenController arDroneController;
 	private JFrame jFrame;
 	private Monitor monitor1;
@@ -268,6 +332,7 @@ public class Launcher {
 	private JPanel content;
 
 	private JPanel centerPanel;
+	private WebCamController webcamController;
 
 	public Launcher() {
 
@@ -278,9 +343,8 @@ public class Launcher {
 		mainModel = new MainModel();
 
 		jFrame.setContentPane(getContent());
-		arDroneController = new WebCamController();
-
-		// arDroneController = new ARDroneController();
+		webcamController = new WebCamController();
+		arDroneController = new ARDroneController();
 
 		jFrame.addWindowListener(new WindowAdapter() {
 
@@ -291,11 +355,6 @@ public class Launcher {
 				jFrame.dispose();
 
 				
-				Map<Thread, StackTraceElement[]> allStackTraces = Thread.getAllStackTraces();
-				for (Thread thread : allStackTraces.keySet()) {
-					if(thread.isAlive()){
-					}
-				}
 				System.exit(0);
 			}
 		});
@@ -359,6 +418,12 @@ public class Launcher {
 		ret.add(menuDrone);
 		menuDrone.add(new JMenuItem(actionConnect));
 		menuDrone.add(new JMenuItem(actionReset));
+		menuDrone.addSeparator();
+		menuDrone.add(new JMenuItem(actionLaunch));
+		menuDrone.add(new JMenuItem(actionLand));
+		menuDrone.addSeparator();
+		menuDrone.add(new JMenuItem(actionFolgekreis));
+		
 
 		JMenu menuAnsicht = new JMenu();
 		menuAnsicht.setText("Ansicht");
@@ -368,6 +433,11 @@ public class Launcher {
 		menuAnsicht.add(new JMenuItem(actionEdge));
 		menuAnsicht.add(new JMenuItem(actionShowColorTrack));
 		menuAnsicht.add(new JMenuItem(actionShowCircleTrack));
+		
+		JMenu menuController = new JMenu();
+		menuController.setText("Controller");
+		ret.add(menuController);
+		menuController.add(new JMenuItem(actionMoveController));
 		return ret;
 	}
 
@@ -377,6 +447,11 @@ public class Launcher {
 		actionEdge.setEnabled(b);
 		actionShowColorTrack.setEnabled(b);
 		actionShowCircleTrack.setEnabled(b);
+		
+		actionFolgekreis.setEnabled(b);
+		
+		actionLaunch.setEnabled(b);
+		actionLand.setEnabled(b);
 	}
 
 	private void start() {
@@ -386,6 +461,12 @@ public class Launcher {
 
 	public DrohnenController getArDroneController() {
 		return arDroneController;
+	}
+
+	public void starteObjektsteuerung() {
+		NavController2D navController2D = new NavController2D();
+		circleDetection.addNavController(navController2D);
+		navController2D.addDrohnenController(getArDroneController());
 	}
 
 }

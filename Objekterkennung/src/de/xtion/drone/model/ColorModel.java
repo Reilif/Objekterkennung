@@ -38,14 +38,14 @@ public class ColorModel extends Model<ColorModel.ColorModelEvents> {
 		vMax = 255;
 
 		//value of lower
-		hLower = 98;
-		sLower = 122;
-		vLower = 93;
+		hLower = 147;
+		sLower = 30;
+		vLower = 240;
 
 		//value of upper
-		hUpper = 123;
-		sUpper = 219;
-		vUpper = 201;
+		hUpper = 171;
+		sUpper = 255;
+		vUpper = 255;
 
 		//Scalars
 		lowerThreshold = new Scalar(hLower, sLower, vLower);

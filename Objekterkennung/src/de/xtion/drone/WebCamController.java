@@ -1,12 +1,10 @@
 package de.xtion.drone;
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 import org.opencv.core.Mat;
@@ -41,23 +39,6 @@ public class WebCamController implements DrohnenController {
 										o.processImage(image);
 									}
 								}
-								if(monitor != null && image != null) {
-									
-									
-									int height = image.getHeight();
-									int width = image.getWidth();
-									
-									double div = (double) height / (double) width;
-									
-									Image scaled;
-									if(monitor.getWidth()*div > monitor.getHeight()){
-										scaled = image.getScaledInstance(monitor.getWidth(), (int) (monitor.getWidth()*div), BufferedImage.SCALE_FAST);
-									}else{
-										scaled = image.getScaledInstance((int) (monitor.getHeight()/div), monitor.getHeight(), BufferedImage.SCALE_FAST);
-									}
-									
-									monitor.setIcon(new ImageIcon(scaled));
-								}
 							}
 						} else {
 							System.out.println(" --(!) No captured frame -- Break!");
@@ -75,6 +56,7 @@ public class WebCamController implements DrohnenController {
 	}
 
 	@Override public void setNavdata(Navdata data) {
+		System.out.println(data);
 	}
 
 	@Override public void stop() {
@@ -110,5 +92,29 @@ public class WebCamController implements DrohnenController {
 				}
 			}
 		});
+	}
+
+	@Override
+	public void launch() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void land() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void turnLeft() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void turnRight() {
+		// TODO Auto-generated method stub
+		
 	}
 }
