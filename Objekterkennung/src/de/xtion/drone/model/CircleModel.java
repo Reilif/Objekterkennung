@@ -1,10 +1,9 @@
 package de.xtion.drone.model;
 
-import java.awt.image.BufferedImage;
-
+import de.xtion.drone.model.util.Model;
 import org.opencv.core.Mat;
 
-import de.xtion.drone.model.util.Model;
+import java.awt.image.BufferedImage;
 
 /**
  * Model of the GUI.
@@ -12,12 +11,18 @@ import de.xtion.drone.model.util.Model;
  * setter and an ugly workaround of integer restriction in sliders - nothing special happens here.
  */
 public class CircleModel extends Model<CircleModel.CircleModelEvent> {
-	private int sliderMultiplier;
-	private BufferedImage circleImage;
-	private Mat circles;
-	private double dp;
-	private int circleMaxSize;
-	private int circleMinSize;
+	private final int           sliderMultiplier;
+	private final double        densityMin;
+	private final double        densityMax;
+	private final int           circleMaxSizeMin;
+	private final int           circleMaxSizeMax;
+	private final int           circleMinSizeMin;
+	private final int           circleMinSizeMax;
+	private       BufferedImage circleImage;
+	private       Mat           circles;
+	private       double        density;
+	private       int           circleMaxSize;
+	private       int           circleMinSize;
 
 	/**
 	 * Initialisation of all values
@@ -25,7 +30,18 @@ public class CircleModel extends Model<CircleModel.CircleModelEvent> {
 	public CircleModel() {
 		super(CircleModel.CircleModelEvent.values());
 		sliderMultiplier = 100;
-		dp = 2d;
+
+		density = 1.5;
+		densityMin = 1;
+		densityMax = 5;
+
+		circleMinSize = 5;
+		circleMinSizeMin = 1;
+		circleMinSizeMax = 600;
+
+		circleMaxSize = 500;
+		circleMaxSizeMin = 1;
+		circleMaxSizeMax = 600;
 	}
 
 	/**
@@ -43,48 +59,103 @@ public class CircleModel extends Model<CircleModel.CircleModelEvent> {
 		fireModelEvent(CircleModelEvent.CIRCLE_IMG);
 	}
 
-	/**
-	 * Enum list used for the events of the EdgeModel
-	 */
-	public enum CircleModelEvent {
-		 CIRCLE_IMG, CIRCLES, DP, CIRCLE_MAX_SIZE, CIRCLE_MIN_SIZE
+	public int getCircleMaxSize() {
+		return circleMaxSize;
+	}
+
+	public void setCircleMaxSize(int maxSize) {
+		circleMaxSize = maxSize;
+		fireModelEvent(CircleModelEvent.CIRCLE_MAX_SIZE);
+	}
+
+	public int getCircleMinSize() {
+		return circleMinSize;
+	}
+
+	public void setCircleMinSize(int minSize) {
+		circleMinSize = minSize;
+		fireModelEvent(CircleModelEvent.CIRCLE_MIN_SIZE);
+	}
+
+	public int getCircleMinSizeMax() {
+		return circleMinSizeMax;
+	}
+
+	public int getCircleMaxSizeMax() {
+		return circleMaxSizeMax;
+	}
+
+	public int getCircleMinSizeMin() {
+		return circleMinSizeMin;
+	}
+
+	public int getCircleMaxSizeMin() {
+		return circleMaxSizeMin;
+	}
+
+	public double getDensityMax() {
+		return getDensityMax(true);
+	}
+
+	public double getDensityMax(boolean withMultiplier) {
+		if(withMultiplier) {
+			return densityMax * sliderMultiplier;
+		}
+		return densityMax;
+	}
+
+	public double getDensityMin() {
+		return getDensityMin(false);
+	}
+
+	public double getDensityMin(boolean withMultiplier) {
+		if(withMultiplier) {
+			return densityMin * sliderMultiplier;
+		}
+		return densityMin;
+	}
+
+	public double getDensity() {
+		return getDensity(false);
+	}
+
+	public double getDensity(boolean withMultiplier) {
+		if(withMultiplier) {
+			return density * sliderMultiplier;
+		}
+		return density;
+	}
+
+	public void setDensity(double density) {
+		setDensity(density, false);
+	}
+
+	public void setDensity(double density, boolean withMultiplier) {
+		if(withMultiplier) {
+			this.density = density / sliderMultiplier;
+		} else {
+			this.density = density;
+		}
+		fireModelEvent(CircleModelEvent.DENSITY);
+	}
+
+	public Mat getCircles() {
+		return circles;
 	}
 
 	public void setCircles(Mat circles) {
 		this.circles = circles;
 		fireModelEvent(CircleModelEvent.CIRCLES);
 	}
-	
-	public Mat getCircles() {
-		return circles;
+
+	public int getSliderMultiplier() {
+		return sliderMultiplier;
 	}
 
-	public double getDp() {
-		return dp;
+	/**
+	 * Enum list used for the events of the EdgeModel
+	 */
+	public enum CircleModelEvent {
+		CIRCLE_IMG, CIRCLES, DENSITY, CIRCLE_MAX_SIZE, CIRCLE_MIN_SIZE
 	}
-	
-	public void setDouble(double dp){
-		this.dp = dp;
-		fireModelEvent(CircleModelEvent.DP);
-	}
-
-	public void setCircleMinSize(int minSize){
-		circleMinSize = minSize;
-		fireModelEvent(CircleModelEvent.CIRCLE_MIN_SIZE);
-	}
-
-	public void setCircleMaxSize(int dp){
-		circleMaxSize = dp;
-		fireModelEvent(CircleModelEvent.CIRCLE_MAX_SIZE);
-	}
-
-	public int getCircleMaxSize() {
-		return circleMaxSize;
-	}
-
-	public int getCircleMinSize() {
-		return circleMinSize;
-	}
-	
-	
 }

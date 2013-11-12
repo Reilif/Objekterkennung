@@ -1,6 +1,7 @@
 package de.xtion.drone.launcher;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -21,11 +22,13 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.border.Border;
 
 import org.opencv.core.Mat;
 
 import de.xtion.drone.ARDroneController;
 import de.xtion.drone.WebCamController;
+import de.xtion.drone.gui.CircleAdjustment;
 import de.xtion.drone.gui.ColorAdjustment;
 import de.xtion.drone.gui.EdgeAdjustment;
 import de.xtion.drone.interfaces.DrohnenController;
@@ -53,8 +56,10 @@ public class Launcher {
 		System.loadLibrary("opencv_java246");
 	}
 
-	private final ActionShowEdgeCam actionEdge = new ActionShowEdgeCam();
-	private final ActionShowColorTrack actionShowColorTrack = new ActionShowColorTrack();
+	private static final Border MONITOR_BORDER = BorderFactory.createLineBorder(Color.BLUE);
+
+	private final ActionShowEdgeCam     actionEdge            = new ActionShowEdgeCam();
+	private final ActionShowColorTrack  actionShowColorTrack  = new ActionShowColorTrack();
 	private final ActionShowCircleTrack actionShowCircleTrack = new ActionShowCircleTrack();
 	private final ActionReset actionReset = new ActionReset();
 	private final ActionLaunch actionLaunch = new ActionLaunch();
@@ -65,7 +70,6 @@ public class Launcher {
 	private final ActionMoveController actionMoveController = new ActionMoveController();
 
 	private MoveController mvController;
-
 	private final class Monitor extends JLabel {
 
 		private int nr;
@@ -83,12 +87,10 @@ public class Launcher {
 				double div = (double) height / (double) width;
 
 				Image scaled;
-				if (getWidth() * div > getHeight()) {
-					scaled = bim.getScaledInstance(getWidth(),
-							(int) (getWidth() * div), BufferedImage.SCALE_FAST);
+				if(getWidth() * div > getHeight()) {
+					scaled = bim.getScaledInstance(getWidth(), (int) (getWidth() * div), BufferedImage.SCALE_FAST);
 				} else {
-					scaled = bim.getScaledInstance((int) (getHeight() / div),
-							getHeight(), BufferedImage.SCALE_FAST);
+					scaled = bim.getScaledInstance((int) (getHeight() / div), getHeight(), BufferedImage.SCALE_FAST);
 				}
 
 				ImageIcon icon = new ImageIcon(scaled);
@@ -98,7 +100,7 @@ public class Launcher {
 
 		@Override
 		public void setIcon(Icon icon) {
-			if (icon == null) {
+			if(icon == null) {
 				setText("Kein Bild auf Monitor " + nr);
 			} else {
 				setText("");
@@ -151,16 +153,14 @@ public class Launcher {
 
 //			starteObjektsteuerung();
 			
-			circleModel.addModelEventListener(CircleModelEvent.CIRCLE_IMG,
-					new ModelEventListener() {
 
-						@Override
-						public void actionPerformed(ModelEvent event) {
-							BufferedImage colorImage = circleModel
-									.getCircleImage();
-							getMonitor3().setImage(colorImage);
-						}
-					});
+			circleModel.addModelEventListener(CircleModelEvent.CIRCLE_IMG, new ModelEventListener() {
+				@Override
+				public void actionPerformed(ModelEvent event) {
+					BufferedImage colorImage = circleModel.getCircleImage();
+					getMonitor3().setImage(colorImage);
+				}
+			});
 		}
 	}
 
@@ -381,10 +381,10 @@ public class Launcher {
 		JPanel jPanel = new JPanel();
 
 		JTabbedPane jTabbedPane = new JTabbedPane();
-		jTabbedPane.addTab("Steuerung Farbpanel", new JScrollPane(
-				new ColorAdjustment(mainModel.getColorModel())));
+		jTabbedPane.addTab("Steuerung Farbpanel", new JScrollPane(new ColorAdjustment(mainModel.getColorModel())));
 		jTabbedPane.addTab("Steuerung Edgepanel", new JScrollPane(
 				new EdgeAdjustment(mainModel.getEdgeModel())));
+		jTabbedPane.addTab("Steuerung Circlepanel", new JScrollPane(new CircleAdjustment(mainModel.getCircleModel())));
 
 		jPanel.add(jTabbedPane);
 		return jPanel;

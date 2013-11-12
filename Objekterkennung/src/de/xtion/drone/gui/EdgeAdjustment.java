@@ -36,7 +36,7 @@ public class EdgeAdjustment extends JPanel {
 		setVisible(true);
 
 		//Strings
-		cannyRadiusString = "Blur radius:";
+		cannyRadiusString = "Blur radius: ";
 		cannyThresholdOneString = "Threshold 1: ";
 		cannyThresholdTwoString = "Threshold 2: ";
 
@@ -48,9 +48,9 @@ public class EdgeAdjustment extends JPanel {
 		cannnyThresholdTwoSlider = new JSlider(JSlider.HORIZONTAL, 0, (int) model.getCannyThresholdTwoMax(true),
 		                                       (int) model.getCannyThresholdTwo(true));
 		//Labels
-		cannnyRadiusLabel = new JLabel(cannyRadiusString);
-		cannnyThresholdOneLabel = new JLabel(cannyThresholdOneString);
-		cannnyThresholdTwoLabel = new JLabel(cannyThresholdTwoString);
+		cannnyRadiusLabel = new JLabel(cannyRadiusString + model.getCannyRadius());
+		cannnyThresholdOneLabel = new JLabel(cannyThresholdOneString + model.getCannyThresholdOne());
+		cannnyThresholdTwoLabel = new JLabel(cannyThresholdTwoString + model.getCannyThresholdTwo());
 
 		//Scale
 		cannnyRadiusSlider.setMinorTickSpacing(scaleMinorSpacing / 3);
