@@ -46,13 +46,13 @@ public class ColorEdgeModel extends Model<ColorEdgeModel.ColorEdgeModelEvent> {
 		sliderMultiplier = 10000;
 
 		//value of lower
-		hLower = 75;
-		sLower = 151;
-		vLower = 232;
+		hLower = 40;
+		sLower = 48;
+		vLower = 30;
 
 		//value of upper
-		hUpper = 110;
-		sUpper = 255;
+		hUpper = 82;
+		sUpper = 230;
 		vUpper = 255;
 
 		//Min slider values

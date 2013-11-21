@@ -154,7 +154,7 @@ public class ColorEdgeAdjustment extends JPanel {
 	}
 
 	private void makeLayout() {
-		this.setLayout(new GridLayout(28, 1));
+		this.setLayout(new GridLayout(0, 2));
 
 		this.add(hLowerLabel);
 		this.add(hLowerSlider);
