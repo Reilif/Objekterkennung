@@ -8,7 +8,7 @@ import javax.swing.JLabel;
 
 import de.xtion.drone.interfaces.DrohnenController;
 import de.xtion.drone.interfaces.Navdata;
-import de.xtion.drone.interfaces.Navdata.Direction2D;
+import de.xtion.drone.interfaces.Navdata.Direction3D;
 import de.xtion.drone.interfaces.OBJController;
 import de.yadrone.base.ARDrone;
 import de.yadrone.base.command.VideoChannel;
@@ -53,9 +53,9 @@ public class ARDroneController implements DrohnenController, ImageListener {
 
 	private Thread flyThread;
 
-	private Direction2D nextMove = Direction2D.NOP;
+	private Direction3D nextMove = Direction3D.NOP;
 
-	private Direction2D lastMove = Direction2D.NOP;
+	private Direction3D lastMove = Direction3D.NOP;
 
 	private int timer = 0;
 
@@ -65,14 +65,14 @@ public class ARDroneController implements DrohnenController, ImageListener {
 	protected void fly() {
 		timer ++;
 		if(timer == 5){
-			nextMove = Direction2D.NOP;
+			nextMove = Direction3D.NOP;
 			System.out.println("Hover");
 			timer = 0;
 		}
 		
 		if(lastMove == nextMove ){
 			lastMove = nextMove;
-			if(nextMove == Direction2D.NOP){
+			if(nextMove == Direction3D.NOP){
 				drone.hover();
 				System.out.println("Hover");
 				return;
@@ -84,21 +84,20 @@ public class ARDroneController implements DrohnenController, ImageListener {
 		
 		lastMove = nextMove;
 		switch (nextMove) {
-		case DOWN:
-			drone.getCommandManager().down(30);
+		case BACKWARD:
+			drone.getCommandManager().backward(5);
 			break;
 		case LEFT:
 			drone.getCommandManager().goLeft(5);
 			break;
 		case NOP:
 			drone.getCommandManager().hover();
-			System.out.println("Hover");
 			break;
 		case RIGHT:
 			drone.getCommandManager().goRight(5);
 			break;
-		case UP:
-			drone.getCommandManager().up(30);
+		case FORWARD:
+			drone.getCommandManager().forward(5);
 			break;
 		case TURN_RIGHT:
 			drone.getCommandManager().spinRight(20);
@@ -106,12 +105,18 @@ public class ARDroneController implements DrohnenController, ImageListener {
 		case TURN_LEFT:
 			drone.getCommandManager().spinLeft(20);
 			break;
+		case UP:
+			drone.getCommandManager().up(20);
+			break;
+		case DOWN:
+			drone.getCommandManager().down(20);
+			break;
 		default:
 			land();
 			break;
 		}
 		
-		nextMove = Direction2D.NOP;
+		nextMove = Direction3D.NOP;
 	}
 
 	@Override
@@ -121,8 +126,8 @@ public class ARDroneController implements DrohnenController, ImageListener {
 
 	@Override
 	public void setNavdata(Navdata data) {
-		if (data instanceof Direction2D) {
-			Direction2D direction2d = (Direction2D) data;
+		if (data instanceof Direction3D) {
+			Direction3D direction2d = (Direction3D) data;
 			nextMove = direction2d;
 		}
 	}
@@ -209,12 +214,22 @@ public class ARDroneController implements DrohnenController, ImageListener {
 
 	@Override
 	public void turnLeft() {
-		nextMove = Direction2D.TURN_LEFT;
+		nextMove = Direction3D.TURN_LEFT;
 	}
 
 	@Override
 	public void turnRight() {
-		nextMove = Direction2D.TURN_RIGHT;
+		nextMove = Direction3D.TURN_RIGHT;
 		
+	}
+
+	@Override
+	public void up() {
+		drone.up();
+	}
+
+	@Override
+	public void down() {
+		drone.down();
 	}
 }

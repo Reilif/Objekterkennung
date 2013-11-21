@@ -23,4 +23,8 @@ public interface DrohnenController {
 	public void turnLeft();
 
 	public void turnRight();
+
+	public void up();
+
+	public void down();
 }

@@ -117,4 +117,16 @@ public class WebCamController implements DrohnenController {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void up() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void down() {
+		// TODO Auto-generated method stub
+		
+	}
 }

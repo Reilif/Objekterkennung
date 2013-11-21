@@ -1,5 +1,32 @@
 package de.xtion.drone.launcher;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.TextField;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+
+import org.opencv.core.Mat;
+
 import de.xtion.drone.ARDroneController;
 import de.xtion.drone.WebCamController;
 import de.xtion.drone.gui.CircleAdjustment;
@@ -8,6 +35,7 @@ import de.xtion.drone.gui.ColorEdgeAdjustment;
 import de.xtion.drone.gui.EdgeAdjustment;
 import de.xtion.drone.interfaces.DrohnenController;
 import de.xtion.drone.interfaces.NavController;
+import de.xtion.drone.interfaces.Navdata.Direction3D;
 import de.xtion.drone.interfaces.OBJController;
 import de.xtion.drone.manipulation.CircleDetection;
 import de.xtion.drone.manipulation.ColorDetection;
@@ -23,16 +51,10 @@ import de.xtion.drone.model.util.ModelEvent;
 import de.xtion.drone.model.util.ModelEventListener;
 import de.xtion.drone.motioncontroller.MoveController;
 import de.xtion.drone.utils.ImageUtils;
-import org.opencv.core.Mat;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 
 public class Launcher {
+
+	private final DrohnenSteuerung tastenStererung = new DrohnenSteuerung();
 
 	static {
 		System.loadLibrary("opencv_java246");
@@ -50,6 +72,54 @@ public class Launcher {
 
 	private boolean useWebcam = false;
 	private MoveController mvController;
+
+	private final class DrohnenSteuerung implements KeyListener {
+		@Override
+		public void keyTyped(KeyEvent e) {}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+
+			
+			
+			char keyCode = e.getKeyChar();
+			switch (keyCode) {
+			case 'w':
+				getArDroneController().setNavdata(Direction3D.FORWARD);
+				break;
+			case 's':
+				getArDroneController().setNavdata(Direction3D.BACKWARD);
+				break;
+			case 'd':
+				getArDroneController().setNavdata(Direction3D.RIGHT);
+				break;
+			case 'a':
+				getArDroneController().setNavdata(Direction3D.LEFT);
+				break;
+			case 'W':
+				getArDroneController().setNavdata(Direction3D.UP);
+				break;
+			case 'S':
+				getArDroneController().setNavdata(Direction3D.DOWN);
+				break;
+			case 'D':
+				getArDroneController().setNavdata(Direction3D.TURN_RIGHT);
+				break;
+			case 'A':
+				getArDroneController().setNavdata(Direction3D.TURN_LEFT);
+				break;
+			default:
+				break;
+			}
+		
+		}
+	}
 
 	private final class Monitor extends JLabel {
 
@@ -373,6 +443,8 @@ public class Launcher {
 						}
 					}
 				});
+		
+		jFrame.addKeyListener(tastenStererung);
 	}
 
 	private JPanel getContent() {
@@ -403,6 +475,9 @@ public class Launcher {
 		jTabbedPane.addTab("Steuerung Edgepanel", new JScrollPane(
 				new EdgeAdjustment(mainModel.getEdgeModel())));
 
+		Component jButton = new TextField();
+		jButton.addKeyListener(tastenStererung);
+		jTabbedPane.addTab("Tastatursteuerung", jButton);
 		jPanel.add(jTabbedPane);
 		return jPanel;
 	}
