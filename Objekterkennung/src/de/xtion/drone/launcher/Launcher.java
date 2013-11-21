@@ -63,7 +63,7 @@ public class Launcher {
 	private final ActionShowLiveCam actionShowLiveCam = new ActionShowLiveCam();
 	private final ActionMoveController actionMoveController = new ActionMoveController();
 
-	private boolean useWebcam = true;
+	private boolean useWebcam = false;
 	private MoveController mvController;
 
 	private final class Monitor extends JLabel {

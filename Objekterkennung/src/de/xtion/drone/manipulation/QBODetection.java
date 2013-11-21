@@ -54,12 +54,16 @@ public class QBODetection {
 						return QboDirection.SO;
 					} else if (pt.x < RAND) {
 						return QboDirection.SW;
+					}else{
+						return QboDirection.S;
 					}
 				} else if (pt.y < RAND) {
 					if (camFrame.width() - RAND < pt.x) {
 						return QboDirection.NO;
 					} else if (pt.x < RAND) {
 						return QboDirection.NW;
+					}else{
+						return QboDirection.N;
 					}
 				} else if (camFrame.width() - RAND < pt.x) {
 					return QboDirection.O;

@@ -11,6 +11,7 @@ import de.xtion.drone.interfaces.Navdata;
 import de.xtion.drone.interfaces.Navdata.Direction2D;
 import de.xtion.drone.interfaces.OBJController;
 import de.yadrone.base.ARDrone;
+import de.yadrone.base.command.VideoChannel;
 import de.yadrone.base.command.VideoCodec;
 import de.yadrone.base.video.ImageListener;
 
@@ -136,6 +137,7 @@ public class ARDroneController implements DrohnenController, ImageListener {
 			arDrone.getVideoManager().addImageListener(this);
 			arDrone.getCommandManager().setVideoCodec(VideoCodec.MP4_360P);
 			arDrone.getCommandManager().setNavDataDemo(false);
+			arDrone.getCommandManager().setVideoChannel(VideoChannel.VERT);
 //			arDrone.getCommandManager().setVideoOnUsb(true);
 //			arDrone.getCommandManager().setVideoCodecFps(FPS_CONFIG);
 		}
