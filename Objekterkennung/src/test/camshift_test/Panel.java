@@ -1,31 +1,26 @@
-package test.color_detection_HSV;
+package test.camshift_test;
 // Import the basic graphics classes.  
 // The problem here is that we read the image with OpenCV into a Mat object.  
 // But OpenCV for java doesn't have the method "imshow", so, we got to use  
 // java for that (drawImage) that uses Image or BufferedImage.  
 // So, how to go from one the other... Here is the way...  
 
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.core.Point;
 import org.opencv.core.Scalar;
-import org.opencv.core.Size;
 import org.opencv.highgui.VideoCapture;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.imgproc.Moments;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class Panel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private BufferedImage image;
 	private static double x = 0;
 	private static double y = 0;
-	private static  Mat circles;
 
 	private BufferedImage getImage() {
 		return image;
@@ -76,13 +71,9 @@ public class Panel extends JPanel {
 		if(temp != null) {
 			g.drawImage(temp, 10, 10, temp.getWidth(), temp.getHeight(), this);
 
-			for (int i = 0; i < circles.cols(); i++) {
-				 double vCircle[]=circles.get(0,i);
-
-	             Point center=new Point(Math.round(vCircle[0]), Math.round(vCircle[1]));
-	             int radius = (int)Math.round(vCircle[2]);
-	             
-	             g.drawOval((int)center.x -radius, (int)center.y -radius, 2*radius, 2*radius);
+			if(x > 0 && y > 0) {
+				g.setColor(Color.YELLOW);
+				g.fillOval((int) x - 5, (int) y - 5, 10, 10);
 			}
 		}
 	}
@@ -123,6 +114,7 @@ public class Panel extends JPanel {
 
 
 
+
 					temp = matToBufferedImage(therehold);
 					panel.setImage(temp);
 					panel.repaint();
@@ -152,14 +144,9 @@ public class Panel extends JPanel {
 
 		x = m10 / area;
 		y = m01 / area;
-		
-		Mat tempOne = new Mat();
-		webcam_image.copyTo(tempOne);
-		
-		circles = new Mat();
 
-		Imgproc.GaussianBlur(ret, tempOne, new Size(9, 9), 2, 2 );
-		
+		//		System.out.println("x:" + x + " y:" + y);
+
 		return ret;
 	}
 }
