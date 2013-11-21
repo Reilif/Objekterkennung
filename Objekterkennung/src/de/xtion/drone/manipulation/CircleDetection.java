@@ -73,7 +73,6 @@ public class CircleDetection implements OBJController, Runnable{
 	}
 
 	/**
-	 * @param camFrame
 	 *            The parameter determines the matrix to be processed to a black
 	 *            and white matrix that shows edges of objects
 	 * @return The return value is a Black and white Matrix where white

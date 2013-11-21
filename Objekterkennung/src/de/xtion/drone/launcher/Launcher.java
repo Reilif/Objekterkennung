@@ -25,14 +25,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
+import de.xtion.drone.gui.*;
 import org.opencv.core.Mat;
 
 import de.xtion.drone.ARDroneController;
 import de.xtion.drone.WebCamController;
-import de.xtion.drone.gui.CircleAdjustment;
-import de.xtion.drone.gui.ColorAdjustment;
-import de.xtion.drone.gui.ColorEdgeAdjustment;
-import de.xtion.drone.gui.EdgeAdjustment;
 import de.xtion.drone.interfaces.DrohnenController;
 import de.xtion.drone.interfaces.NavController;
 import de.xtion.drone.interfaces.Navdata.Direction3D;
@@ -51,6 +48,7 @@ import de.xtion.drone.model.util.ModelEvent;
 import de.xtion.drone.model.util.ModelEventListener;
 import de.xtion.drone.motioncontroller.MoveController;
 import de.xtion.drone.utils.ImageUtils;
+import org.monte.media.image.WhiteBalance;
 
 public class Launcher {
 
@@ -70,7 +68,7 @@ public class Launcher {
 	private final ActionShowLiveCam actionShowLiveCam = new ActionShowLiveCam();
 	private final ActionMoveController actionMoveController = new ActionMoveController();
 
-	private boolean useWebcam = false;
+	private boolean useWebcam = true;
 	private MoveController mvController;
 
 	private final class DrohnenSteuerung implements KeyListener {
@@ -236,16 +234,16 @@ public class Launcher {
 					edgeModel);
 			webcamController.addOBJController(edgeDetection);
 			edgeModel.addModelEventListener(
-					ColorEdgeModel.ColorEdgeModelEvent.COLOR_EDGE_IMAGE,
-					new ModelEventListener() {
+                    ColorEdgeModel.ColorEdgeModelEvent.COLOR_EDGE_IMAGE,
+                    new ModelEventListener() {
 
-						@Override
-						public void actionPerformed(ModelEvent event) {
-							BufferedImage edgeImage = edgeModel
-									.getColorEdgeImage();
-							getMonitor2().setImage(edgeImage);
-						}
-					});
+                        @Override
+                        public void actionPerformed(ModelEvent event) {
+                            BufferedImage edgeImage = edgeModel
+                                    .getColorEdgeImage();
+                            getMonitor2().setImage(edgeImage);
+                        }
+                    });
 		}
 	}
 
@@ -474,6 +472,7 @@ public class Launcher {
 		jTabbedPane.addTab("Steuerung Circlepanel", new JScrollPane(new CircleAdjustment(mainModel.getCircleModel())));
 		jTabbedPane.addTab("Steuerung Edgepanel", new JScrollPane(
 				new EdgeAdjustment(mainModel.getEdgeModel())));
+        jTabbedPane.addTab("Weißabgleich", new WhiteBalances());
 
 		Component jButton = new TextField();
 		jButton.addKeyListener(tastenStererung);

@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.swing.JLabel;
 
+import de.xtion.drone.gui.WhiteBalances;
+import org.monte.media.image.WhiteBalance;
 import org.opencv.core.Mat;
 import org.opencv.highgui.VideoCapture;
 
@@ -31,7 +33,7 @@ public class WebCamController implements DrohnenController {
 					while(true) {
 						capture.read(webcamImage);
 						if(!webcamImage.empty()) {
-							image = ImageUtils.matToBufferedImage(webcamImage);
+							image = WhiteBalances.setWhiteBalance(ImageUtils.matToBufferedImage(webcamImage));
 
 							if(image != null){
 								synchronized (objControllers) {
