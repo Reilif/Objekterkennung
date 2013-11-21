@@ -1,33 +1,10 @@
 package de.xtion.drone.launcher;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
-
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-
-import org.opencv.core.Mat;
-
 import de.xtion.drone.ARDroneController;
 import de.xtion.drone.WebCamController;
 import de.xtion.drone.gui.CircleAdjustment;
 import de.xtion.drone.gui.ColorAdjustment;
+import de.xtion.drone.gui.ColorEdgeAdjustment;
 import de.xtion.drone.gui.EdgeAdjustment;
 import de.xtion.drone.interfaces.DrohnenController;
 import de.xtion.drone.interfaces.NavController;
@@ -46,6 +23,14 @@ import de.xtion.drone.model.util.ModelEvent;
 import de.xtion.drone.model.util.ModelEventListener;
 import de.xtion.drone.motioncontroller.MoveController;
 import de.xtion.drone.utils.ImageUtils;
+import org.opencv.core.Mat;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 
 public class Launcher {
 
@@ -411,12 +396,12 @@ public class Launcher {
 		JPanel jPanel = new JPanel();
 
 		JTabbedPane jTabbedPane = new JTabbedPane();
-		jTabbedPane.addTab("Steuerung Farbpanel", new JScrollPane(
-				new ColorAdjustment(mainModel.getColorModel())));
+		jTabbedPane.addTab("Steuerung Farbpanel", new JScrollPane(new ColorAdjustment(mainModel.getColorModel())));
+		jTabbedPane.addTab("Steuerung ColorEdgepanel", new JScrollPane(
+				new ColorEdgeAdjustment(mainModel.getColorEdgeModel())));
+		jTabbedPane.addTab("Steuerung Circlepanel", new JScrollPane(new CircleAdjustment(mainModel.getCircleModel())));
 		jTabbedPane.addTab("Steuerung Edgepanel", new JScrollPane(
 				new EdgeAdjustment(mainModel.getEdgeModel())));
-		jTabbedPane.addTab("Steuerung Circlepanel", new JScrollPane(
-				new CircleAdjustment(mainModel.getCircleModel())));
 
 		jPanel.add(jTabbedPane);
 		return jPanel;

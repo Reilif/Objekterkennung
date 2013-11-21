@@ -1,9 +1,8 @@
 package de.xtion.drone.model;
 
+import de.xtion.drone.model.util.Model;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
-
-import de.xtion.drone.model.util.Model;
 
 public class ColorModel extends Model<ColorModel.ColorModelEvents> {
 	private Scalar lowerThreshold;
@@ -38,13 +37,13 @@ public class ColorModel extends Model<ColorModel.ColorModelEvents> {
 		vMax = 255;
 
 		//value of lower
-		hLower = 120;
-		sLower = 30;
-		vLower = 240;
+		hLower = 40;
+		sLower = 48;
+		vLower = 30;
 
 		//value of upper
-		hUpper = 171;
-		sUpper = 255;
+		hUpper = 82;
+		sUpper = 230;
 		vUpper = 255;
 
 		//Scalars
