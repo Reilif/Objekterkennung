@@ -472,7 +472,7 @@ public class Launcher {
 		jTabbedPane.addTab("Steuerung Circlepanel", new JScrollPane(new CircleAdjustment(mainModel.getCircleModel())));
 		jTabbedPane.addTab("Steuerung Edgepanel", new JScrollPane(
 				new EdgeAdjustment(mainModel.getEdgeModel())));
-      //  jTabbedPane.addTab("Weißabgleich", new WhiteBalances());
+        jTabbedPane.addTab("Weißabgleich", new WhiteBalances());
 
 		Component jButton = new TextField();
 		jButton.addKeyListener(tastenStererung);

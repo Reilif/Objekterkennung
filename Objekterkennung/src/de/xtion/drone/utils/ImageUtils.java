@@ -29,9 +29,11 @@ public class ImageUtils {
 	 * @return
 	 */
 	public static Mat bufferedImageToMat(BufferedImage bufImg) {
-		Mat ret = new Mat(bufImg.getHeight(), bufImg.getWidth(), CvType.CV_8UC3);
+        BufferedImage convertedImage = new BufferedImage(bufImg.getWidth(), bufImg.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+        convertedImage.getGraphics().drawImage(bufImg, 0, 0, null);
+		Mat ret = new Mat(convertedImage.getHeight(), convertedImage.getWidth(), CvType.CV_8UC3);
 
-		byte[] pixels = ((DataBufferByte) bufImg.getRaster().getDataBuffer()).getData();
+		byte[] pixels = ((DataBufferByte) convertedImage.getRaster().getDataBuffer()).getData();
 		ret.put(0, 0, pixels);
 
 		return ret;

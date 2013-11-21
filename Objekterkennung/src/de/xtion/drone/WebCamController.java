@@ -33,7 +33,7 @@ public class WebCamController implements DrohnenController {
 					while(true) {
 						capture.read(webcamImage);
 						if(!webcamImage.empty()) {
-							image = ImageUtils.matToBufferedImage(webcamImage);
+							image = WhiteBalances.setWhiteBalance(ImageUtils.matToBufferedImage(webcamImage));
 
 							if(image != null){
 								synchronized (objControllers) {

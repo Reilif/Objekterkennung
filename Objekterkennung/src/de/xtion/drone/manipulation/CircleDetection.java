@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import de.xtion.drone.gui.WhiteBalances;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -83,7 +84,7 @@ public class CircleDetection implements OBJController, Runnable{
 	@Override
 	public void processImage(BufferedImage data) {
 		
-		image = data;
+		image = WhiteBalances.setWhiteBalance(data);
 	}
 
 	private void calculate() {

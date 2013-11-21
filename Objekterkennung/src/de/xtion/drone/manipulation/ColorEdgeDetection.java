@@ -1,5 +1,6 @@
 package de.xtion.drone.manipulation;
 
+import de.xtion.drone.gui.WhiteBalances;
 import de.xtion.drone.interfaces.NavController;
 import de.xtion.drone.interfaces.OBJController;
 import de.xtion.drone.model.ColorEdgeModel;
