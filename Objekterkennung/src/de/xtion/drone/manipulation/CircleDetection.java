@@ -31,8 +31,8 @@ import de.xtion.drone.utils.ImageUtils;
  * objects
  */
 public class CircleDetection implements OBJController, Runnable{
-	private static final int SLEEP_TIME = 20;
-	private static final int RAND = 150;
+	private static final int SLEEP_TIME = 100;
+	private static final int RAND = 100;
 	private CircleModel model;
 	private Mat tempOne;
 	private Mat tempTwo;
@@ -96,7 +96,7 @@ public class CircleDetection implements OBJController, Runnable{
 			Imgproc.cvtColor(camFrame, tempOne, Imgproc.COLOR_BGR2HSV);
 			Core.inRange(tempOne, colorModel.getLowerThreshold(), colorModel.getUpperThreshold(), tempTwo);
 			
-//			Imgproc.blur(tempTwo, tempTwo, blurRadius); // Blur
+			Imgproc.blur(tempTwo, tempTwo, blurRadius); // Blur
 //			
 //			Mat edges = new Mat();
 //			Imgproc.Canny(tempTwo, edges, em.getCannyThresholdOne(),
@@ -132,6 +132,10 @@ public class CircleDetection implements OBJController, Runnable{
 				g2.drawOval((int)pt.x - radius, (int)pt.y - radius, radius*2, radius*2);
 			}
 			
+			g2.drawLine(0, RAND, deepCopy.getWidth(), RAND);
+			g2.drawLine(0, deepCopy.getHeight() - RAND, deepCopy.getWidth(), deepCopy.getHeight() - RAND);
+			g2.drawLine(RAND, RAND, RAND, deepCopy.getHeight() - RAND);
+			g2.drawLine(deepCopy.getWidth() - RAND, RAND, deepCopy.getWidth() - RAND, deepCopy.getHeight() - RAND);
 			
 			g2.dispose();
 			model.setCircleImage(deepCopy);
@@ -146,15 +150,15 @@ public class CircleDetection implements OBJController, Runnable{
 	        
 	        Point pt = new Point(Math.round(vCircle[0]), Math.round(vCircle[1]));
 //	        System.out.println(pt);
-	        if(camFrame.width() - RAND < pt.x){
-	        	fire(PositionData2D.RIGHT);
-	        }else if(pt.x < RAND){
-	        	fire(PositionData2D.LEFT);
-	        }else if(camFrame.height() - RAND < pt.y){
+	        if(camFrame.height() - RAND < pt.y){
 	        	fire(PositionData2D.LOWER);
 	        }else if(pt.y < RAND){
 	        	fire(PositionData2D.HIGHER);
-	        }else{
+	        }else if(camFrame.width() - RAND < pt.x){
+	        	fire(PositionData2D.RIGHT);
+	        }else if(pt.x < RAND){
+	        	fire(PositionData2D.LEFT);
+	        }else {
 	        	fire(PositionData2D.NOP);
 	        }
 		}

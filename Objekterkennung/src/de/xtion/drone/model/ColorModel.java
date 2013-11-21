@@ -38,7 +38,7 @@ public class ColorModel extends Model<ColorModel.ColorModelEvents> {
 		vMax = 255;
 
 		//value of lower
-		hLower = 147;
+		hLower = 120;
 		sLower = 30;
 		vLower = 240;
 

@@ -11,6 +11,7 @@ import de.xtion.drone.interfaces.Navdata;
 import de.xtion.drone.interfaces.Navdata.Direction2D;
 import de.xtion.drone.interfaces.OBJController;
 import de.yadrone.base.ARDrone;
+import de.yadrone.base.command.VideoCodec;
 import de.yadrone.base.video.ImageListener;
 
 public class ARDroneController implements DrohnenController, ImageListener {
@@ -37,7 +38,7 @@ public class ARDroneController implements DrohnenController, ImageListener {
 
 	private static final int FPS_CONFIG = 15; // Werte zwischen 15 und 30
 
-	private static final int HOVER_SLEEP = 200;
+	private static final int HOVER_SLEEP = 500;
 
 	private static final long LAUNCH_SLEEP = 1000;
 
@@ -55,10 +56,18 @@ public class ARDroneController implements DrohnenController, ImageListener {
 
 	private Direction2D lastMove = Direction2D.NOP;
 
+	private int timer = 0;
+
 	public ARDroneController() {
 	}
 
 	protected void fly() {
+		timer ++;
+		if(timer == 5){
+			nextMove = Direction2D.NOP;
+			System.out.println("Hover");
+			timer = 0;
+		}
 		
 		if(lastMove == nextMove ){
 			lastMove = nextMove;
@@ -70,23 +79,25 @@ public class ARDroneController implements DrohnenController, ImageListener {
 			return;
 		}
 		
+		
+		
 		lastMove = nextMove;
 		switch (nextMove) {
 		case DOWN:
-			drone.getCommandManager().down(20);
+			drone.getCommandManager().down(30);
 			break;
 		case LEFT:
-			drone.getCommandManager().goLeft(20);
+			drone.getCommandManager().goLeft(5);
 			break;
 		case NOP:
 			drone.getCommandManager().hover();
 			System.out.println("Hover");
 			break;
 		case RIGHT:
-			drone.getCommandManager().goRight(20);
+			drone.getCommandManager().goRight(5);
 			break;
 		case UP:
-			drone.getCommandManager().up(20);
+			drone.getCommandManager().up(30);
 			break;
 		case TURN_RIGHT:
 			drone.getCommandManager().spinRight(20);
@@ -122,7 +133,10 @@ public class ARDroneController implements DrohnenController, ImageListener {
 		boolean b = true;
 //		boolean b = arDrone.getCommandManager().isConnected() && arDrone.getNavDataManager().isConnected() && arDrone.getVideoManager().isConnected();
 		if(b){
-//			arDrone.getVideoManager().addImageListener(this);
+			arDrone.getVideoManager().addImageListener(this);
+			arDrone.getCommandManager().setVideoCodec(VideoCodec.MP4_360P);
+			arDrone.getCommandManager().setNavDataDemo(false);
+//			arDrone.getCommandManager().setVideoOnUsb(true);
 //			arDrone.getCommandManager().setVideoCodecFps(FPS_CONFIG);
 		}
 		return b;

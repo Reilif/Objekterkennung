@@ -56,10 +56,11 @@ public class Launcher {
 		System.loadLibrary("opencv_java246");
 	}
 
-	private static final Border MONITOR_BORDER = BorderFactory.createLineBorder(Color.BLUE);
+	private static final Border MONITOR_BORDER = BorderFactory
+			.createLineBorder(Color.BLUE);
 
-	private final ActionShowEdgeCam     actionEdge            = new ActionShowEdgeCam();
-	private final ActionShowColorTrack  actionShowColorTrack  = new ActionShowColorTrack();
+	private final ActionShowEdgeCam actionEdge = new ActionShowEdgeCam();
+	private final ActionShowColorTrack actionShowColorTrack = new ActionShowColorTrack();
 	private final ActionShowCircleTrack actionShowCircleTrack = new ActionShowCircleTrack();
 	private final ActionReset actionReset = new ActionReset();
 	private final ActionLaunch actionLaunch = new ActionLaunch();
@@ -69,7 +70,9 @@ public class Launcher {
 	private final ActionShowLiveCam actionShowLiveCam = new ActionShowLiveCam();
 	private final ActionMoveController actionMoveController = new ActionMoveController();
 
+	private boolean useWebcam = true;
 	private MoveController mvController;
+
 	private final class Monitor extends JLabel {
 
 		private int nr;
@@ -87,10 +90,12 @@ public class Launcher {
 				double div = (double) height / (double) width;
 
 				Image scaled;
-				if(getWidth() * div > getHeight()) {
-					scaled = bim.getScaledInstance(getWidth(), (int) (getWidth() * div), BufferedImage.SCALE_FAST);
+				if (getWidth() * div > getHeight()) {
+					scaled = bim.getScaledInstance(getWidth(),
+							(int) (getWidth() * div), BufferedImage.SCALE_FAST);
 				} else {
-					scaled = bim.getScaledInstance((int) (getHeight() / div), getHeight(), BufferedImage.SCALE_FAST);
+					scaled = bim.getScaledInstance((int) (getHeight() / div),
+							getHeight(), BufferedImage.SCALE_FAST);
 				}
 
 				ImageIcon icon = new ImageIcon(scaled);
@@ -100,7 +105,7 @@ public class Launcher {
 
 		@Override
 		public void setIcon(Icon icon) {
-			if(icon == null) {
+			if (icon == null) {
 				setText("Kein Bild auf Monitor " + nr);
 			} else {
 				setText("");
@@ -136,6 +141,7 @@ public class Launcher {
 	}
 
 	private CircleDetection circleDetection;
+
 	private final class ActionShowCircleTrack extends AbstractAction {
 
 		public ActionShowCircleTrack() {
@@ -146,21 +152,25 @@ public class Launcher {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			final CircleModel circleModel = mainModel.getCircleModel();
-			circleDetection = new CircleDetection(
-					circleModel, mainModel.getColorModel(),
-					mainModel.getEdgeModel());
-			webcamController.addOBJController(circleDetection);
+			circleDetection = new CircleDetection(circleModel,
+					mainModel.getColorModel(), mainModel.getEdgeModel());
+			if (useWebcam) {
+				webcamController.addOBJController(circleDetection);
+			} else {
+				getArDroneController().addOBJController(circleDetection);
+			}
 
-//			starteObjektsteuerung();
-			
+			// starteObjektsteuerung();
 
-			circleModel.addModelEventListener(CircleModelEvent.CIRCLE_IMG, new ModelEventListener() {
-				@Override
-				public void actionPerformed(ModelEvent event) {
-					BufferedImage colorImage = circleModel.getCircleImage();
-					getMonitor3().setImage(colorImage);
-				}
-			});
+			circleModel.addModelEventListener(CircleModelEvent.CIRCLE_IMG,
+					new ModelEventListener() {
+						@Override
+						public void actionPerformed(ModelEvent event) {
+							BufferedImage colorImage = circleModel
+									.getCircleImage();
+							getMonitor3().setImage(colorImage);
+						}
+					});
 		}
 	}
 
@@ -199,38 +209,38 @@ public class Launcher {
 			getArDroneController().resetDrone();
 		}
 	}
-	
+
 	private final class ActionLaunch extends AbstractAction {
 		public ActionLaunch() {
 			putValue(NAME, "Startet Drohne");
 			setEnabled(false);
 		}
-		
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			getArDroneController().launch();
 		}
 	}
-	
+
 	private final class ActionFolgeKreis extends AbstractAction {
-		
-		 public ActionFolgeKreis() {
-			putValue(NAME, "Startet Drohne");
+
+		public ActionFolgeKreis() {
+			putValue(NAME, "Startet Kreistracking");
 			setEnabled(false);
 		}
-		
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			starteObjektsteuerung();
 		}
 	}
-	
+
 	private final class ActionLand extends AbstractAction {
 		public ActionLand() {
 			putValue(NAME, "Landet Drohne");
 			setEnabled(false);
 		}
-		
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			getArDroneController().land();
@@ -241,7 +251,7 @@ public class Launcher {
 		public ActionMoveController() {
 			putValue(NAME, "Aktiviert MoveController");
 		}
-		
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			getMoveController();
@@ -275,17 +285,22 @@ public class Launcher {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			getArDroneController().addOBJController(new OBJController() {
-				
+			OBJController contr = new OBJController() {
+
 				@Override
 				public void processImage(BufferedImage data) {
 					getMonitor0().setImage(data);
 				}
-				
+
 				@Override
 				public void addNavController(NavController contr) {
 				}
-			});
+			};
+			if (useWebcam) {
+				webcamController.addOBJController(contr);
+			} else {
+				getArDroneController().addOBJController(contr);
+			}
 		}
 	}
 
@@ -297,10 +312,10 @@ public class Launcher {
 	}
 
 	public MoveController getMoveController() {
-		if(mvController == null){
+		if (mvController == null) {
 			mvController = new MoveController(getArDroneController(), this);
 		}
-		
+
 		return mvController;
 	}
 
@@ -354,7 +369,6 @@ public class Launcher {
 				getArDroneController().stop();
 				jFrame.dispose();
 
-				
 				System.exit(0);
 			}
 		});
@@ -381,10 +395,12 @@ public class Launcher {
 		JPanel jPanel = new JPanel();
 
 		JTabbedPane jTabbedPane = new JTabbedPane();
-		jTabbedPane.addTab("Steuerung Farbpanel", new JScrollPane(new ColorAdjustment(mainModel.getColorModel())));
+		jTabbedPane.addTab("Steuerung Farbpanel", new JScrollPane(
+				new ColorAdjustment(mainModel.getColorModel())));
 		jTabbedPane.addTab("Steuerung Edgepanel", new JScrollPane(
 				new EdgeAdjustment(mainModel.getEdgeModel())));
-		jTabbedPane.addTab("Steuerung Circlepanel", new JScrollPane(new CircleAdjustment(mainModel.getCircleModel())));
+		jTabbedPane.addTab("Steuerung Circlepanel", new JScrollPane(
+				new CircleAdjustment(mainModel.getCircleModel())));
 
 		jPanel.add(jTabbedPane);
 		return jPanel;
@@ -423,7 +439,6 @@ public class Launcher {
 		menuDrone.add(new JMenuItem(actionLand));
 		menuDrone.addSeparator();
 		menuDrone.add(new JMenuItem(actionFolgekreis));
-		
 
 		JMenu menuAnsicht = new JMenu();
 		menuAnsicht.setText("Ansicht");
@@ -433,7 +448,7 @@ public class Launcher {
 		menuAnsicht.add(new JMenuItem(actionEdge));
 		menuAnsicht.add(new JMenuItem(actionShowColorTrack));
 		menuAnsicht.add(new JMenuItem(actionShowCircleTrack));
-		
+
 		JMenu menuController = new JMenu();
 		menuController.setText("Controller");
 		ret.add(menuController);
@@ -447,9 +462,9 @@ public class Launcher {
 		actionEdge.setEnabled(b);
 		actionShowColorTrack.setEnabled(b);
 		actionShowCircleTrack.setEnabled(b);
-		
+
 		actionFolgekreis.setEnabled(b);
-		
+
 		actionLaunch.setEnabled(b);
 		actionLand.setEnabled(b);
 	}
