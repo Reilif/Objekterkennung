@@ -1,7 +1,7 @@
 package de.xtion.drone.gui;
 
+import de.xtion.drone.manipulation.ImgProcessing;
 import de.xtion.drone.model.ImgProcessingModel;
-import org.monte.media.image.WhiteBalance;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -10,7 +10,6 @@ import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 
 /**
@@ -31,18 +30,23 @@ public class ImgProcessingAdjustment extends JPanel implements ItemListener {
     private final boolean scalePaintTicks = true;
     private JSlider contrastSlider;
     private JSlider brightnessSlider;
+    private JSlider hueSlider;
+    private JSlider saturationSlider;
+    private JSlider valueSlider;
+    private JLabel whiteBalancesLabel;
     private JLabel contrastLabel;
     private JLabel brightnessLabel;
-
-    public static StringBuffer algorithms;
-    public static RescaleOp rescaleOp;
+    private JLabel hueLabel;
+    private JLabel saturationLabel;
+    private JLabel valueLabel;
 
     public ImgProcessingAdjustment(ImgProcessingModel m){
         super(new GridLayout(0,1));
 
         // indicate image adjustments
-        ImgProcessingAdjustment.algorithms = new StringBuffer("---");
-        ImgProcessingAdjustment.rescaleOp = new RescaleOp(m.getContrast(), m.getBrightness(), null);
+        ImgProcessing.algorithms = new StringBuffer("---");
+        ImgProcessing.rescaleOp = new RescaleOp(m.getContrast(), m.getBrightness(), null);
+        ImgProcessing.hsv = new double[3];
 
         this.model = m;
 
@@ -65,6 +69,7 @@ public class ImgProcessingAdjustment extends JPanel implements ItemListener {
         this.contrastSlider = new JSlider(JSlider.HORIZONTAL, m.getMinContrast(), m.getMaxContrast(), (int) m.getContrast());
         this.brightnessSlider = new JSlider(JSlider.HORIZONTAL, m.getMinBrightness(), m.getMaxBrightness(), m.getBrightness());
 
+        this.whiteBalancesLabel = new JLabel("White Balances");
         this.contrastLabel = new JLabel("Contrast: " + m.getContrast());
         this.brightnessLabel = new JLabel("Brightness: " + m.getBrightness());
 
@@ -76,26 +81,50 @@ public class ImgProcessingAdjustment extends JPanel implements ItemListener {
         this.brightnessSlider.setMajorTickSpacing(m.getMaxBrightness() / 5);
         this.brightnessSlider.setPaintTicks(scalePaintTicks);
 
+        // init slider for HSV
+        this.hueSlider = new JSlider(JSlider.HORIZONTAL, m.getMinHue(), m.getMaxHue(), (int) m.getHue());
+        this.saturationSlider = new JSlider(JSlider.HORIZONTAL, m.getMinSaturation(), m.getMaxSaturation(), (int) m.getSaturation());
+        this.valueSlider = new JSlider(JSlider.HORIZONTAL, m.getMinValue(), m.getMaxValue(), (int) m.getValue());
+
+        this.hueLabel = new JLabel("Hue: " + m.getHue());
+        this.saturationLabel = new JLabel("Saturation: " + m.getSaturation());
+        this.valueLabel = new JLabel("Value: " + m.getValue());
+
+        this.hueSlider.setMinorTickSpacing(m.getMaxHue() / 5 / 10);
+        this.hueSlider.setMajorTickSpacing(m.getMaxHue() / 5);
+        this.hueSlider.setPaintTicks(scalePaintTicks);
+
+        this.saturationSlider.setMinorTickSpacing(m.getMaxSaturation() / 5 / 10);
+        this.saturationSlider.setMajorTickSpacing(m.getMaxSaturation() / 5);
+        this.saturationSlider.setPaintTicks(scalePaintTicks);
+
+        this.valueSlider.setMinorTickSpacing(m.getMaxValue() / 5 / 10);
+        this.valueSlider.setMajorTickSpacing(m.getMaxValue() / 5);
+        this.valueSlider.setPaintTicks(scalePaintTicks);
+
+        this.add(this.whiteBalancesLabel);
         this.add(this.wbGrayWorld);
         this.add(this.wbQM);
         this.add(this.wbRetinex);
         this.add(new JPanel());
-        this.add(new JPanel());
-        this.add(new JPanel());
-        this.add(new JPanel());
-        this.add(this.contrastSlider);
         this.add(this.contrastLabel);
-        this.add(new JPanel());
-        this.add(new JPanel());
-        this.add(this.brightnessSlider);
+        this.add(this.contrastSlider);
         this.add(this.brightnessLabel);
+        this.add(this.brightnessSlider);
+        this.add(new JPanel());
+        this.add(this.hueLabel);
+        this.add(this.hueSlider);
+        this.add(this.saturationLabel);
+        this.add(this.saturationSlider);
+        this.add(this.valueLabel);
+        this.add(this.valueSlider);
 
         this.contrastSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 model.setContrast(((JSlider) e.getSource()).getValue());
                 contrastLabel.setText("Contrast: " + model.getContrast());
-                ImgProcessingAdjustment.rescaleOp = new RescaleOp(model.getContrast(), model.getBrightness(), null);
+                ImgProcessing.rescaleOp = new RescaleOp(model.getContrast(), model.getBrightness(), null);
             }
         });
 
@@ -104,7 +133,34 @@ public class ImgProcessingAdjustment extends JPanel implements ItemListener {
             public void stateChanged(ChangeEvent e) {
                 model.setBrightness(((JSlider) e.getSource()).getValue());
                 brightnessLabel.setText("Brightness: " + model.getBrightness());
-                ImgProcessingAdjustment.rescaleOp = new RescaleOp(model.getContrast(), model.getBrightness(), null);
+                ImgProcessing.rescaleOp = new RescaleOp(model.getContrast(), model.getBrightness(), null);
+            }
+        });
+
+        this.hueSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                model.setHue(((JSlider) e.getSource()).getValue());
+                hueLabel.setText("Hue: " + model.getHue());
+                ImgProcessing.hsv[0] = model.getHue();
+            }
+        });
+
+        this.saturationSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                model.setSaturation(((JSlider) e.getSource()).getValue());
+                saturationLabel.setText("Saturation: " + model.getSaturation());
+                ImgProcessing.hsv[1] = model.getSaturation();
+            }
+        });
+
+        this.valueSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                model.setValue(((JSlider) e.getSource()).getValue());
+                valueLabel.setText("Value: " + model.getValue());
+                ImgProcessing.hsv[2] = model.getValue();
             }
         });
 
@@ -119,46 +175,29 @@ public class ImgProcessingAdjustment extends JPanel implements ItemListener {
         if(source == wbGrayWorld){
             index = 0;
             c = 'g';
+            this.model.setGrayWorld(true);
         } else if(source == wbQM){
             index = 1;
             c = 'q';
+            this.model.setQuadraticMapping(true);
         } else if(source == wbRetinex){
             index = 2;
             c = 'r';
+            this.model.setRetinex(true);
         }
 
         if(e.getStateChange() == ItemEvent.DESELECTED){
             c = '-';
+            if(source == wbGrayWorld){
+                this.model.setGrayWorld(false);
+            } else if(source == wbQM){
+                this.model.setQuadraticMapping(false);
+            } else if(source == wbRetinex){
+                this.model.setRetinex(false);
+            }
         }
 
-        ImgProcessingAdjustment.algorithms.setCharAt(index,c);
+        ImgProcessing.algorithms.setCharAt(index,c);
     }
 
-    private static BufferedImage setWhiteBalance(BufferedImage data){
-        if(ImgProcessingAdjustment.algorithms.toString().equals("g--")){
-             return WhiteBalance.whiteBalanceGreyworld(data);
-        } else if(ImgProcessingAdjustment.algorithms.toString().equals("-q-")){
-            return WhiteBalance.whiteBalanceQM(data);
-        } else if(ImgProcessingAdjustment.algorithms.toString().equals("--r")){
-            return WhiteBalance.whiteBalanceRetinex(data);
-        } else if(ImgProcessingAdjustment.algorithms.toString().equals("gq-")){
-            return WhiteBalance.whiteBalanceQM(WhiteBalance.whiteBalanceGreyworld(data));
-        } else if(ImgProcessingAdjustment.algorithms.toString().equals("g-r")){
-            return WhiteBalance.whiteBalanceRetinex(WhiteBalance.whiteBalanceGreyworld(data));
-        } else if(ImgProcessingAdjustment.algorithms.toString().equals("-qr")){
-            return WhiteBalance.whiteBalanceRetinex(WhiteBalance.whiteBalanceQM(data));
-        } else if(ImgProcessingAdjustment.algorithms.toString().equals("gqr")) {
-            return WhiteBalance.whiteBalanceRetinex(WhiteBalance.whiteBalanceQM(WhiteBalance.whiteBalanceGreyworld(data)));
-        } else {
-            return data;
-        }
-    }
-
-    private static BufferedImage setBrightnessAndContrast(BufferedImage data){
-        return ImgProcessingAdjustment.rescaleOp.filter(data, data);
-    }
-
-    public static BufferedImage setImgAdjustments(BufferedImage data){
-        return ImgProcessingAdjustment.setBrightnessAndContrast(ImgProcessingAdjustment.setWhiteBalance(data));
-    }
 }

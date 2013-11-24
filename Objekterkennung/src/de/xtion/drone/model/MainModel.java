@@ -7,6 +7,7 @@ public class MainModel extends Model<MainModel.MainModelEvents> {
 	private final ColorModel     colorModel;
 	private final CircleModel    circleModel;
 	private final ColorEdgeModel colorEdgeModel;
+    private final ImgProcessingModel imgProcModel;
 
 	public MainModel() {
 		super(MainModelEvents.values());
@@ -14,6 +15,7 @@ public class MainModel extends Model<MainModel.MainModelEvents> {
 		colorModel = new ColorModel();
 		circleModel = new CircleModel();
 		colorEdgeModel = new ColorEdgeModel();
+        imgProcModel = new ImgProcessingModel();
 	}
 
 	public EdgeModel getEdgeModel() {
@@ -31,6 +33,10 @@ public class MainModel extends Model<MainModel.MainModelEvents> {
 	public ColorEdgeModel getColorEdgeModel() {
 		return colorEdgeModel;
 	}
+
+    public ImgProcessingModel getImgProcModel(){
+        return imgProcModel;
+    }
 
 	public enum MainModelEvents {
 

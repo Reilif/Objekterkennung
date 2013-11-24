@@ -468,7 +468,7 @@ public class Launcher {
 		jTabbedPane.addTab("Steuerung Circlepanel", new JScrollPane(new CircleAdjustment(mainModel.getCircleModel())));
 		jTabbedPane.addTab("Steuerung Edgepanel", new JScrollPane(
 				new EdgeAdjustment(mainModel.getEdgeModel())));
-        jTabbedPane.addTab("Image Adjustments", new ImgProcessingAdjustment(new ImgProcessingModel()));
+        jTabbedPane.addTab("Image Adjustments", new JScrollPane(new ImgProcessingAdjustment(mainModel.getImgProcModel())));
 
 		Component jButton = new TextField();
 		jButton.addKeyListener(tastenStererung);
