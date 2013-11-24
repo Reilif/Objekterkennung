@@ -2,7 +2,6 @@ package de.xtion.drone.manipulation;
 
 import java.awt.image.BufferedImage;
 
-import de.xtion.drone.gui.WhiteBalances;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;

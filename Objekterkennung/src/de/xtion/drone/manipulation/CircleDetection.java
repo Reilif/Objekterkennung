@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.xtion.drone.gui.WhiteBalances;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -84,7 +83,7 @@ public class CircleDetection implements OBJController, Runnable{
 	@Override
 	public void processImage(BufferedImage data) {
 		
-		image = WhiteBalances.setWhiteBalance(data);
+		image = data;
 	}
 
 	private void calculate() {
@@ -112,25 +111,26 @@ public class CircleDetection implements OBJController, Runnable{
 			BufferedImage deepCopy = ImageUtils.matToBufferedImage(tempTwo);
 			Graphics2D g2 = deepCopy.createGraphics();
 			g2.setStroke(new BasicStroke(5));
-			
-			
-			for (int i = 0; i < circles.cols(); i++) {
-				
-				double vCircle[] = circles.get(0,i);
-				
-				if (vCircle == null)
-					continue;
-				
-				Point pt = new Point(Math.round(vCircle[0]), Math.round(vCircle[1]));
-				int radius = (int)Math.round(vCircle[2]);
-				
-				
-				g2.setColor(Color.RED);
-				g2.fillOval((int)(pt.x - 2), (int)pt.y - 2, 4, 4);
-				
-				g2.setColor(Color.GREEN);
-				g2.drawOval((int)pt.x - radius, (int)pt.y - radius, radius*2, radius*2);
-			}
+
+            if(circles.cols() == 1){
+                for (int i = 0; i < circles.cols(); i++) {
+
+                    double vCircle[] = circles.get(0,i);
+
+                    if (vCircle == null)
+                        continue;
+
+                    Point pt = new Point(Math.round(vCircle[0]), Math.round(vCircle[1]));
+                    int radius = (int)Math.round(vCircle[2]);
+
+
+                    g2.setColor(Color.RED);
+                    g2.fillOval((int)(pt.x - 2), (int)pt.y - 2, 4, 4);
+
+                    g2.setColor(Color.GREEN);
+                    g2.drawOval((int)pt.x - radius, (int)pt.y - radius, radius*2, radius*2);
+                }
+            }
 			
 			g2.drawLine(0, RAND, deepCopy.getWidth(), RAND);
 			g2.drawLine(0, deepCopy.getHeight() - RAND, deepCopy.getWidth(), deepCopy.getHeight() - RAND);
@@ -144,6 +144,7 @@ public class CircleDetection implements OBJController, Runnable{
 
 	private void fireCirclesChanged(Mat camFrame) {
 		if(circles.cols() == 1){
+
 			double vCircle[] = circles.get(0,0);
 
 	        if (vCircle == null) return;

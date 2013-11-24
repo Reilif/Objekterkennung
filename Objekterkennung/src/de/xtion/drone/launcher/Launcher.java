@@ -26,6 +26,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import de.xtion.drone.gui.*;
+import de.xtion.drone.model.*;
 import org.opencv.core.Mat;
 
 import de.xtion.drone.ARDroneController;
@@ -38,17 +39,12 @@ import de.xtion.drone.manipulation.CircleDetection;
 import de.xtion.drone.manipulation.ColorDetection;
 import de.xtion.drone.manipulation.ColorEdgeDetection;
 import de.xtion.drone.manipulation.NavController2D;
-import de.xtion.drone.model.CircleModel;
 import de.xtion.drone.model.CircleModel.CircleModelEvent;
-import de.xtion.drone.model.ColorEdgeModel;
-import de.xtion.drone.model.ColorModel;
 import de.xtion.drone.model.ColorModel.ColorModelEvents;
-import de.xtion.drone.model.MainModel;
 import de.xtion.drone.model.util.ModelEvent;
 import de.xtion.drone.model.util.ModelEventListener;
 import de.xtion.drone.motioncontroller.MoveController;
 import de.xtion.drone.utils.ImageUtils;
-import org.monte.media.image.WhiteBalance;
 
 public class Launcher {
 
@@ -472,7 +468,7 @@ public class Launcher {
 		jTabbedPane.addTab("Steuerung Circlepanel", new JScrollPane(new CircleAdjustment(mainModel.getCircleModel())));
 		jTabbedPane.addTab("Steuerung Edgepanel", new JScrollPane(
 				new EdgeAdjustment(mainModel.getEdgeModel())));
-        jTabbedPane.addTab("Weißabgleich", new WhiteBalances());
+        jTabbedPane.addTab("Image Adjustments", new ImgProcessingAdjustment(new ImgProcessingModel()));
 
 		Component jButton = new TextField();
 		jButton.addKeyListener(tastenStererung);

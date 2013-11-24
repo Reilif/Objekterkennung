@@ -1,14 +1,14 @@
 package de.xtion.drone;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JLabel;
 
-import de.xtion.drone.gui.WhiteBalances;
-import org.monte.media.image.WhiteBalance;
+import de.xtion.drone.gui.ImgProcessingAdjustment;
 import org.opencv.core.Mat;
 import org.opencv.highgui.VideoCapture;
 
@@ -33,7 +33,9 @@ public class WebCamController implements DrohnenController {
 					while(true) {
 						capture.read(webcamImage);
 						if(!webcamImage.empty()) {
-							image = WhiteBalances.setWhiteBalance(ImageUtils.matToBufferedImage(webcamImage));
+							image = ImgProcessingAdjustment.setImgAdjustments(ImageUtils.matToBufferedImage(webcamImage));
+                        //    RescaleOp rescaleOp = new RescaleOp(1.0f, 0, null);
+                        //    rescaleOp.filter(image, image);
 
 							if(image != null){
 								synchronized (objControllers) {
