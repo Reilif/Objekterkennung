@@ -43,7 +43,7 @@ public class ImgProcessingAdjustment extends JPanel implements ItemListener {
     public ImgProcessingAdjustment(ImgProcessingModel m){
         super(new GridLayout(0,1));
 
-        // indicate image adjustments
+        // init image adjustments
         ImgProcessing.algorithms = new StringBuffer("---");
         ImgProcessing.rescaleOp = new RescaleOp(m.getContrast(), m.getBrightness(), null);
         ImgProcessing.hsv = new double[3];

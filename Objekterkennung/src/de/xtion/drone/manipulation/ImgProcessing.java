@@ -50,8 +50,8 @@ public class ImgProcessing {
     }
 
     private static BufferedImage setHSV(BufferedImage data){
-        tempOne = ImageUtils.bufferedImageToMat(data);
-        Imgproc.cvtColor(tempOne, tempTwo, Imgproc.COLOR_BGR2HSV);
+        ImgProcessing.tempOne = ImageUtils.bufferedImageToMat(data);
+        Imgproc.cvtColor(ImgProcessing.tempOne, ImgProcessing.tempTwo, Imgproc.COLOR_BGR2HSV);
 
         for(int i = 0; i < ImgProcessing.tempTwo.rows(); i++){
             for(int j = 0; j < ImgProcessing.tempTwo.cols(); j++){
