@@ -23,6 +23,7 @@ public class ImgProcessing {
     public static StringBuffer algorithms;
     public static RescaleOp rescaleOp;
     public static double[] hsv;
+    private static double[] hsv2 = new double[3];
 
     private static BufferedImage setWhiteBalance(BufferedImage data){
         if(ImgProcessing.algorithms.toString().equals("g--")){
@@ -51,28 +52,19 @@ public class ImgProcessing {
     private static BufferedImage setHSV(BufferedImage data){
         tempOne = ImageUtils.bufferedImageToMat(data);
         Imgproc.cvtColor(tempOne, tempTwo, Imgproc.COLOR_BGR2HSV);
-        double[] hsv2 = new double[3];
 
-        for(int i = 0; i < tempTwo.rows(); i++){
-            for(int j = 0; j < tempTwo.cols(); j++){
-                hsv2[0] = hsv[0] + tempTwo.get(i,j)[0];
-                hsv2[1] = hsv[1] + tempTwo.get(i,j)[1];
-                hsv2[2] = hsv[2] + tempTwo.get(i,j)[2];
-                tempTwo.put(i, j, hsv2);
+        for(int i = 0; i < ImgProcessing.tempTwo.rows(); i++){
+            for(int j = 0; j < ImgProcessing.tempTwo.cols(); j++){
+                ImgProcessing.hsv2[0] = ImgProcessing.hsv[0] + ImgProcessing.tempTwo.get(i,j)[0];
+                ImgProcessing.hsv2[1] = ImgProcessing.hsv[1] + ImgProcessing.tempTwo.get(i,j)[1];
+                ImgProcessing.hsv2[2] = ImgProcessing.hsv[2] + ImgProcessing.tempTwo.get(i,j)[2];
+                ImgProcessing.tempTwo.put(i, j, ImgProcessing.hsv2);
             }
         }
 
-        Imgproc.cvtColor(tempTwo, tempThree, Imgproc.COLOR_HSV2BGR);
+        Imgproc.cvtColor(ImgProcessing.tempTwo, ImgProcessing.tempThree, Imgproc.COLOR_HSV2BGR);
 
-        return ImageUtils.matToBufferedImage(tempThree);
-    }
-
-    private static BufferedImage setSaturation(BufferedImage data){
-        return data;
-    }
-
-    private static BufferedImage setValue(BufferedImage data){
-        return data;
+        return ImageUtils.matToBufferedImage(ImgProcessing.tempThree);
     }
 
     public static BufferedImage setImgAdjustments(BufferedImage data){
