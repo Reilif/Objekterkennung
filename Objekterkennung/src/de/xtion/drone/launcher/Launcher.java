@@ -25,12 +25,15 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
-import de.xtion.drone.gui.*;
-import de.xtion.drone.model.*;
 import org.opencv.core.Mat;
 
 import de.xtion.drone.ARDroneController;
 import de.xtion.drone.WebCamController;
+import de.xtion.drone.gui.CircleAdjustment;
+import de.xtion.drone.gui.ColorAdjustment;
+import de.xtion.drone.gui.ColorEdgeAdjustment;
+import de.xtion.drone.gui.EdgeAdjustment;
+import de.xtion.drone.gui.ImgProcessingAdjustment;
 import de.xtion.drone.interfaces.DrohnenController;
 import de.xtion.drone.interfaces.NavController;
 import de.xtion.drone.interfaces.Navdata.Direction3D;
@@ -39,8 +42,12 @@ import de.xtion.drone.manipulation.CircleDetection;
 import de.xtion.drone.manipulation.ColorDetection;
 import de.xtion.drone.manipulation.ColorEdgeDetection;
 import de.xtion.drone.manipulation.NavController2D;
+import de.xtion.drone.model.CircleModel;
 import de.xtion.drone.model.CircleModel.CircleModelEvent;
+import de.xtion.drone.model.ColorEdgeModel;
+import de.xtion.drone.model.ColorModel;
 import de.xtion.drone.model.ColorModel.ColorModelEvents;
+import de.xtion.drone.model.MainModel;
 import de.xtion.drone.model.util.ModelEvent;
 import de.xtion.drone.model.util.ModelEventListener;
 import de.xtion.drone.motioncontroller.MoveController;
@@ -64,7 +71,7 @@ public class Launcher {
 	private final ActionShowLiveCam actionShowLiveCam = new ActionShowLiveCam();
 	private final ActionMoveController actionMoveController = new ActionMoveController();
 
-	private boolean useWebcam = true;
+	private boolean useWebcam = false;
 	private MoveController mvController;
 
 	private final class DrohnenSteuerung implements KeyListener {
@@ -215,8 +222,10 @@ public class Launcher {
 					});
 		}
 	}
+	private ColorEdgeDetection edgeDetection;
 
 	private final class ActionShowEdgeCam extends AbstractAction {
+
 
 		public ActionShowEdgeCam() {
 			putValue(NAME, "Zeige ColorEdgebild");
@@ -226,9 +235,13 @@ public class Launcher {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			final ColorEdgeModel edgeModel = mainModel.getColorEdgeModel();
-			final ColorEdgeDetection edgeDetection = new ColorEdgeDetection(
+			edgeDetection = new ColorEdgeDetection(
 					edgeModel);
-			webcamController.addOBJController(edgeDetection);
+			if (useWebcam) {
+				webcamController.addOBJController(edgeDetection);
+			} else {
+				getArDroneController().addOBJController(edgeDetection);
+			}
 			edgeModel.addModelEventListener(
                     ColorEdgeModel.ColorEdgeModelEvent.COLOR_EDGE_IMAGE,
                     new ModelEventListener() {
@@ -394,7 +407,6 @@ public class Launcher {
 	private JPanel centerPanel;
 	private WebCamController webcamController;
 
-	private ColorEdgeModel.EdgePosition prevPos;
 
 	public Launcher() {
 
@@ -422,22 +434,6 @@ public class Launcher {
 
 		enableActions(true);
 		jFrame.pack();
-
-		prevPos = null;
-
-		mainModel.getColorEdgeModel().addModelEventListener(
-				ColorEdgeModel.ColorEdgeModelEvent.COLOR_EDGE_POS,
-				new ModelEventListener() {
-					@Override
-					public void actionPerformed(ModelEvent event) {
-						if (mainModel.getColorEdgeModel().getEdgePosition() != prevPos) {
-							prevPos = mainModel.getColorEdgeModel()
-									.getEdgePosition();
-							System.out.println(prevPos.name());
-						}
-					}
-				});
-		
 		jFrame.addKeyListener(tastenStererung);
 	}
 
@@ -551,7 +547,7 @@ public class Launcher {
 
 	public void starteObjektsteuerung() {
 		NavController2D navController2D = new NavController2D();
-		circleDetection.addNavController(navController2D);
+		edgeDetection.addNavController(navController2D);
 		navController2D.addDrohnenController(getArDroneController());
 	}
 

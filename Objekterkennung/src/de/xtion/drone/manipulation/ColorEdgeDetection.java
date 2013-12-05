@@ -1,9 +1,10 @@
 package de.xtion.drone.manipulation;
 
-import de.xtion.drone.interfaces.NavController;
-import de.xtion.drone.interfaces.OBJController;
-import de.xtion.drone.model.ColorEdgeModel;
-import de.xtion.drone.utils.ImageUtils;
+import java.awt.image.BufferedImage;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -11,19 +12,25 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.imgproc.Moments;
 
-import java.awt.image.BufferedImage;
+import de.xtion.drone.interfaces.NavController;
+import de.xtion.drone.interfaces.OBJController;
+import de.xtion.drone.interfaces.PositionData;
+import de.xtion.drone.model.ColorEdgeModel;
+import de.xtion.drone.utils.ImageUtils;
 
 public class ColorEdgeDetection implements OBJController {
 	private ColorEdgeModel model;
+	private Set<NavController> controller = Collections.synchronizedSet(new HashSet<NavController>());
 
+	
 	public ColorEdgeDetection(ColorEdgeModel model) {
 		this.model = model;
 	}
 
-	@Override public void addNavController(NavController contr) {
-		//To change body of implemented methods use File | Settings | File Templates.
+	@Override
+	public void addNavController(NavController contr) {
+		controller.add(contr);
 	}
-
 	@Override public void processImage(BufferedImage data) {
 		Mat temp = new Mat();
 		Mat camFrame = ImageUtils.bufferedImageToMat(data);
@@ -127,28 +134,43 @@ public class ColorEdgeDetection implements OBJController {
 	private void checkEdge() {
 		if(model.getTopY() < model.getTopBorder()) {
 			if(model.getTopX() > model.getMaxX() - model.getRightBorder()) {
-				model.setEdgePosition(ColorEdgeModel.EdgePosition.TOP_RIGHT);
+				model.setEdgePosition(QboDirection.NO);
+				fire(QboDirection.NO);
 			} else if(model.getTopX() < model.getLeftBorder()) {
-				model.setEdgePosition(ColorEdgeModel.EdgePosition.TOP_LEFT);
+				model.setEdgePosition(QboDirection.NW);
+				fire(QboDirection.NW);
 			} else {
-				model.setEdgePosition(ColorEdgeModel.EdgePosition.TOP);
+				model.setEdgePosition(QboDirection.N);
+				fire(QboDirection.N);
 			}
 		} else if(model.getRightX() > model.getMaxX() - model.getRightBorder()) {
 			if(model.getBottomX() > model.getMaxX() - model.getRightBorder()) {
-				model.setEdgePosition(ColorEdgeModel.EdgePosition.RIGHT_BOTTOM);
+				model.setEdgePosition(QboDirection.SO);
+				fire(QboDirection.SO);
 			} else {
-				model.setEdgePosition(ColorEdgeModel.EdgePosition.RIGHT);
+				model.setEdgePosition(QboDirection.O);
+				fire(QboDirection.O);
 			}
 		} else if(model.getBottomY() > model.getMaxY() - model.getBottomBorder()) {
 			if(model.getBottomX() < model.getLeftBorder()) {
-				model.setEdgePosition(ColorEdgeModel.EdgePosition.BOTTOM_LEFT);
+				model.setEdgePosition(QboDirection.SW);
+				fire(QboDirection.SW);
 			} else {
-				model.setEdgePosition(ColorEdgeModel.EdgePosition.BOTTOM);
+				model.setEdgePosition(QboDirection.S);
+				fire(QboDirection.S);
 			}
 		} else if(model.getLeftX() < model.getLeftBorder()) {
-			model.setEdgePosition(ColorEdgeModel.EdgePosition.LEFT);
+			model.setEdgePosition(QboDirection.W);
+			fire(QboDirection.W);
 		} else {
-			model.setEdgePosition(ColorEdgeModel.EdgePosition.CENTER);
+			model.setEdgePosition(QboDirection.CENTER);
+			fire(QboDirection.CENTER);
+		}
+	}
+	
+	private void fire(PositionData right) {
+		for (NavController nav : controller) {
+			nav.setPosData(right);
 		}
 	}
 }

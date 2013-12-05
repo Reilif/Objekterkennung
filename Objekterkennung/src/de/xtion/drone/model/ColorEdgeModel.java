@@ -1,16 +1,18 @@
 package de.xtion.drone.model;
 
-import de.xtion.drone.model.util.Model;
+import java.awt.image.BufferedImage;
+
 import org.opencv.core.Scalar;
 
-import java.awt.image.BufferedImage;
+import de.xtion.drone.interfaces.PositionData;
+import de.xtion.drone.model.util.Model;
 
 public class ColorEdgeModel extends Model<ColorEdgeModel.ColorEdgeModelEvent> {
 	public final int           sliderMultiplier;
 	private      BufferedImage colorEdgeImage;
 	private      Scalar        lowerThreshold;
 	private      Scalar        upperThreshold;
-	private      EdgePosition  edgePosition;
+	private      PositionData  edgePosition;
 	private      int           hLower;
 	private      int           sLower;
 	private      int           vLower;
@@ -46,13 +48,13 @@ public class ColorEdgeModel extends Model<ColorEdgeModel.ColorEdgeModelEvent> {
 		sliderMultiplier = 10000;
 
 		//value of lower
-		hLower = 40;
-		sLower = 48;
-		vLower = 30;
+		hLower = 3;
+		sLower = 133;
+		vLower = 163;
 
 		//value of upper
-		hUpper = 82;
-		sUpper = 230;
+		hUpper = 39;
+		sUpper = 236;
 		vUpper = 255;
 
 		//Min slider values
@@ -349,11 +351,11 @@ public class ColorEdgeModel extends Model<ColorEdgeModel.ColorEdgeModelEvent> {
 		fireModelEvent(ColorEdgeModelEvent.COLOR_EDGE_IMAGE);
 	}
 
-	public EdgePosition getEdgePosition() {
+	public PositionData getEdgePosition() {
 		return edgePosition;
 	}
 
-	public void setEdgePosition(EdgePosition edgePosition) {
+	public void setEdgePosition(PositionData edgePosition) {
 		this.edgePosition = edgePosition;
 		fireModelEvent(ColorEdgeModelEvent.COLOR_EDGE_POS);
 	}
@@ -380,7 +382,4 @@ public class ColorEdgeModel extends Model<ColorEdgeModel.ColorEdgeModelEvent> {
 		COLOR_EDGE_IMAGE, LOWER_THR, UPPER_THR, COLOR_EDGE_POS, MAX_X, MAX_Y
 	}
 
-	public enum EdgePosition {
-		TOP, TOP_RIGHT, RIGHT, RIGHT_BOTTOM, BOTTOM, BOTTOM_LEFT, LEFT, TOP_LEFT, CENTER
-	}
 }

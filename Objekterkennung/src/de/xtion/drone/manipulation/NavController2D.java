@@ -8,11 +8,10 @@ import de.xtion.drone.interfaces.DrohnenController;
 import de.xtion.drone.interfaces.NavController;
 import de.xtion.drone.interfaces.Navdata.Direction3D;
 import de.xtion.drone.interfaces.PositionData;
-import de.xtion.drone.interfaces.PositionData.PositionData2D;
 
 public class NavController2D implements NavController {
 
-	private PositionData2D lastState = null;
+	private PositionData lastState = null;
 
 	private Set<DrohnenController> listener = Collections
 			.synchronizedSet(new HashSet<DrohnenController>());
@@ -31,34 +30,37 @@ public class NavController2D implements NavController {
 
 	@Override
 	public void setPosData(PositionData data) {
-		if (data instanceof PositionData2D) {
-			PositionData2D positionData2D = (PositionData2D) data;
+		if (data instanceof QboDirection) {
+			QboDirection qboDirection = (QboDirection) data;
 
-			if (lastState == positionData2D && befehlEinmal)
+			if (lastState == qboDirection && befehlEinmal)
 				return;
 
-			lastState = positionData2D;
-			switch (positionData2D) {
-			case HIGHER:
-				fireNavData(Direction3D.FORWARD);
+			lastState = qboDirection;
+			switch (qboDirection) {
+			case N:
+			case NW:
+			case NO:
+				fireNavData(Direction3D.UP);
 				break;
-			case LEFT:
+			case W:
+			case SW:
 				fireNavData(Direction3D.LEFT);
 				break;
-			case LOWER:
-				fireNavData(Direction3D.BACKWARD);
+			case S:
+				fireNavData(Direction3D.DOWN);
 				break;
-			case RIGHT:
+			case O:
+			case SO:
 				fireNavData(Direction3D.RIGHT);
 				break;
-			case NOP:
+			case CENTER:
 				fireNavData(Direction3D.NOP);
 				break;
 			default:
 				break;
 			}
 		}
-
 	}
 
 	private void fireNavData(Direction3D up) {

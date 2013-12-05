@@ -17,7 +17,6 @@ import org.opencv.imgproc.Imgproc;
 import de.xtion.drone.interfaces.NavController;
 import de.xtion.drone.interfaces.OBJController;
 import de.xtion.drone.interfaces.PositionData;
-import de.xtion.drone.interfaces.PositionData.PositionData2D;
 import de.xtion.drone.model.CircleModel;
 import de.xtion.drone.model.EdgeModel;
 import de.xtion.drone.model.EdgeModel.EdgeModelEvent;
@@ -150,17 +149,16 @@ public class CircleDetection implements OBJController, Runnable{
 	        if (vCircle == null) return;
 	        
 	        Point pt = new Point(Math.round(vCircle[0]), Math.round(vCircle[1]));
-//	        System.out.println(pt);
 	        if(camFrame.height() - RAND < pt.y){
-	        	fire(PositionData2D.LOWER);
+	        	fire(QboDirection.S);
 	        }else if(pt.y < RAND){
-	        	fire(PositionData2D.HIGHER);
+	        	fire(QboDirection.N);
 	        }else if(camFrame.width() - RAND < pt.x){
-	        	fire(PositionData2D.RIGHT);
+	        	fire(QboDirection.O);
 	        }else if(pt.x < RAND){
-	        	fire(PositionData2D.LEFT);
+	        	fire(QboDirection.W);
 	        }else {
-	        	fire(PositionData2D.NOP);
+	        	fire(QboDirection.CENTER);
 	        }
 		}
 	}
