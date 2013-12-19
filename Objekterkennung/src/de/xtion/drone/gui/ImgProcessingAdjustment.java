@@ -13,11 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.RescaleOp;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Noshaba
- * Date: 21.11.13
- * Time: 11:43
- * To change this template use File | Settings | File Templates.
+ * This Panel provides the options to change the values in the ImgProcessingModel at runtime.
  */
 public class ImgProcessingAdjustment extends JPanel implements ItemListener {
 
@@ -39,6 +35,10 @@ public class ImgProcessingAdjustment extends JPanel implements ItemListener {
     private JLabel hueLabel;
     private JLabel saturationLabel;
     private JLabel valueLabel;
+
+    /**
+     * @param m The parameter represents the ImgProcessingModel the object is getting and setting information from/to
+     */
 
     public ImgProcessingAdjustment(ImgProcessingModel m){
         super(new GridLayout(0,1));
@@ -102,6 +102,7 @@ public class ImgProcessingAdjustment extends JPanel implements ItemListener {
         this.valueSlider.setMajorTickSpacing(m.getMaxValue() / 5);
         this.valueSlider.setPaintTicks(scalePaintTicks);
 
+        // add components to stage
         this.add(this.whiteBalancesLabel);
         this.add(this.wbGrayWorld);
         this.add(this.wbQM);
@@ -119,6 +120,7 @@ public class ImgProcessingAdjustment extends JPanel implements ItemListener {
         this.add(this.valueLabel);
         this.add(this.valueSlider);
 
+        // add listener
         this.contrastSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -165,6 +167,12 @@ public class ImgProcessingAdjustment extends JPanel implements ItemListener {
         });
 
     }
+
+    /**
+     * Action listener to set the string buffer 'ImgProcessing.algorithms' in the ImgProcessing class and to set a true
+     * or false flag on a white balance to fire the specific events in the ImgProcessingModel
+     * @param e Click-Event
+     */
 
     @ Override
     public void itemStateChanged(ItemEvent e){
