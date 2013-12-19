@@ -39,7 +39,6 @@ public class ImgProcessingAdjustment extends JPanel implements ItemListener {
     /**
      * @param m The parameter represents the ImgProcessingModel the object is getting and setting information from/to
      */
-
     public ImgProcessingAdjustment(ImgProcessingModel m){
         super(new GridLayout(0,1));
 
@@ -173,7 +172,6 @@ public class ImgProcessingAdjustment extends JPanel implements ItemListener {
      * or false flag on a white balance to fire the specific events in the ImgProcessingModel
      * @param e Click-Event
      */
-
     @ Override
     public void itemStateChanged(ItemEvent e){
         int index = 0;

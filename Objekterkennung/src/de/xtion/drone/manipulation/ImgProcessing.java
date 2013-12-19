@@ -27,7 +27,6 @@ public class ImgProcessing {
      * @param data - buffered image to apply the white balances on
      * @return - buffered image with applied white balances or without if none were selected
      */
-
     private static BufferedImage setWhiteBalance(BufferedImage data){
         if(ImgProcessing.algorithms.toString().equals("g--")){
             return WhiteBalance.whiteBalanceGreyworld(data);
@@ -53,7 +52,6 @@ public class ImgProcessing {
      * @param data - buffered image of that the brightness and contrast shall be set
      * @return - buffered image with new brightness and contrast
      */
-
     private static BufferedImage setBrightnessAndContrast(BufferedImage data){
         // 'rescaleOp.filter' applies the set rescaleOp on the image (first value is contrast, second is brightness)
         return ImgProcessing.rescaleOp.filter(data, data);
@@ -64,7 +62,6 @@ public class ImgProcessing {
      * @param data - buffered image of that the HSV shall be set
      * @return - buffered image with new HSV
      */
-
     private static BufferedImage setHSV(BufferedImage data){
         ImgProcessing.tempOne = ImageUtils.bufferedImageToMat(data);
         // BGR to HSV
@@ -87,7 +84,6 @@ public class ImgProcessing {
      * @param data - buffered image that shall be edited
      * @return - edited buffered image
      */
-
     public static BufferedImage setImgAdjustments(BufferedImage data){
         return ImgProcessing.setHSV(ImgProcessing.setBrightnessAndContrast(ImgProcessing.setWhiteBalance(data)));
     }

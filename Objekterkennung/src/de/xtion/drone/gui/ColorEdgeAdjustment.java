@@ -9,6 +9,10 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 
+/**
+ * This Panel provides the options to change the values in the
+ * ColorEdgeDetection at runtime.
+ */
 public class ColorEdgeAdjustment extends JPanel {
 	private final boolean scalePaintTicks = true;
 	ColorEdgeModel model;
@@ -82,30 +86,44 @@ public class ColorEdgeAdjustment extends JPanel {
 		vUpperLabel = new JLabel(vUpperString + model.getvUpper());
 
 		topBorderLabel = new JLabel(topBorderString + model.getTopBorder());
-		rightBorderLabel = new JLabel(rightBorderString + model.getRightBorder());
-		bottomBorderLabel = new JLabel(bottomBorderString + model.getBottomBorder());
+		rightBorderLabel =
+				new JLabel(rightBorderString + model.getRightBorder());
+		bottomBorderLabel =
+				new JLabel(bottomBorderString + model.getBottomBorder());
 		leftBorderLabel = new JLabel(leftBorderString + model.getLeftBorder());
 
-		colorThresholdLabel = new JLabel(colorThresholdString + model.getColorThreshold());
+		colorThresholdLabel =
+				new JLabel(colorThresholdString + model.getColorThreshold());
 	}
 
 	private void makeSliders() {
-		hLowerSlider = new JSlider(JSlider.HORIZONTAL, model.gethMin(), model.gethMax(), model.gethLower());
-		sLowerSlider = new JSlider(JSlider.HORIZONTAL, model.getsMin(), model.getsMax(), model.getsLower());
-		vLowerSlider = new JSlider(JSlider.HORIZONTAL, model.getvMin(), model.getvMax(), model.getvLower());
+		hLowerSlider = new JSlider(JSlider.HORIZONTAL, model.gethMin(),
+		                           model.gethMax(), model.gethLower());
+		sLowerSlider = new JSlider(JSlider.HORIZONTAL, model.getsMin(),
+		                           model.getsMax(), model.getsLower());
+		vLowerSlider = new JSlider(JSlider.HORIZONTAL, model.getvMin(),
+		                           model.getvMax(), model.getvLower());
 
-		hUpperSlider = new JSlider(JSlider.HORIZONTAL, model.gethMin(), model.gethMax(), model.gethUpper());
-		sUpperSlider = new JSlider(JSlider.HORIZONTAL, model.getsMin(), model.getsMax(), model.getsUpper());
-		vUpperSlider = new JSlider(JSlider.HORIZONTAL, model.getvMin(), model.getvMax(), model.getvUpper());
+		hUpperSlider = new JSlider(JSlider.HORIZONTAL, model.gethMin(),
+		                           model.gethMax(), model.gethUpper());
+		sUpperSlider = new JSlider(JSlider.HORIZONTAL, model.getsMin(),
+		                           model.getsMax(), model.getsUpper());
+		vUpperSlider = new JSlider(JSlider.HORIZONTAL, model.getvMin(),
+		                           model.getvMax(), model.getvUpper());
 
-		topBorderSlider = new JSlider(JSlider.HORIZONTAL, 1, model.getMaxY(), model.getTopBorder());
-		rightBorderSlider = new JSlider(JSlider.HORIZONTAL, 1, model.getMaxX(), model.getRightBorder());
-		bottomBorderSlider = new JSlider(JSlider.HORIZONTAL, 1, model.getMaxY(), model.getBottomBorder());
-		leftBorderSlider = new JSlider(JSlider.HORIZONTAL, 1, model.getMaxX(), model.getLeftBorder());
+		topBorderSlider = new JSlider(JSlider.HORIZONTAL, 1, model.getMaxY(),
+		                              model.getTopBorder());
+		rightBorderSlider = new JSlider(JSlider.HORIZONTAL, 1, model.getMaxX(),
+		                                model.getRightBorder());
+		bottomBorderSlider = new JSlider(JSlider.HORIZONTAL, 1, model.getMaxY(),
+		                                 model.getBottomBorder());
+		leftBorderSlider = new JSlider(JSlider.HORIZONTAL, 1, model.getMaxX(),
+		                               model.getLeftBorder());
 
-		colorThresholdSlider =
-				new JSlider(JSlider.HORIZONTAL, model.getColorThresholdMin(true), model.getColorThresholdMax(true),
-				            (int) model.getColorThreshold(true));
+		colorThresholdSlider = new JSlider(JSlider.HORIZONTAL,
+		                                   model.getColorThresholdMin(true),
+		                                   model.getColorThresholdMax(true),
+		                                   (int) model.getColorThreshold(true));
 
 		//Anzeige der Skala
 		hLowerSlider.setMinorTickSpacing(model.gethMax() / 5 / 10);
@@ -148,8 +166,10 @@ public class ColorEdgeAdjustment extends JPanel {
 		leftBorderSlider.setMajorTickSpacing(model.getMaxX() / 5);
 		leftBorderSlider.setPaintTicks(scalePaintTicks);
 
-		colorThresholdSlider.setMinorTickSpacing(model.getColorThresholdMax(true) / 5 / 10);
-		colorThresholdSlider.setMajorTickSpacing(model.getColorThresholdMax(true) / 5);
+		colorThresholdSlider
+				.setMinorTickSpacing(model.getColorThresholdMax(true) / 5 / 10);
+		colorThresholdSlider
+				.setMajorTickSpacing(model.getColorThresholdMax(true) / 5);
 		colorThresholdSlider.setPaintTicks(scalePaintTicks);
 	}
 
@@ -251,32 +271,37 @@ public class ColorEdgeAdjustment extends JPanel {
 		rightBorderSlider.addChangeListener(new ChangeListener() {
 			@Override public void stateChanged(ChangeEvent e) {
 				model.setRightBorder(((JSlider) e.getSource()).getValue());
-				rightBorderLabel.setText(rightBorderString + model.getRightBorder());
+				rightBorderLabel
+						.setText(rightBorderString + model.getRightBorder());
 			}
 		});
 
 		leftBorderSlider.addChangeListener(new ChangeListener() {
 			@Override public void stateChanged(ChangeEvent e) {
 				model.setLeftBorder(((JSlider) e.getSource()).getValue());
-				leftBorderLabel.setText(leftBorderString + model.getLeftBorder());
+				leftBorderLabel
+						.setText(leftBorderString + model.getLeftBorder());
 			}
 		});
 
 		bottomBorderSlider.addChangeListener(new ChangeListener() {
 			@Override public void stateChanged(ChangeEvent e) {
 				model.setBottomBorder(((JSlider) e.getSource()).getValue());
-				bottomBorderLabel.setText(bottomBorderString + model.getBottomBorder());
+				bottomBorderLabel
+						.setText(bottomBorderString + model.getBottomBorder());
 			}
 		});
 
 		colorThresholdSlider.addChangeListener(new ChangeListener() {
 			@Override public void stateChanged(ChangeEvent e) {
-				model.setColorThreshold(((JSlider) e.getSource()).getValue(), true);
-				colorThresholdLabel.setText(colorThresholdString + model.getColorThreshold());
+				model.setColorThreshold(((JSlider) e.getSource()).getValue(),
+				                        true);
+				colorThresholdLabel.setText(
+						colorThresholdString + model.getColorThreshold());
 			}
 		});
 
-		model.addModelEventListener(ColorEdgeModel.ColorEdgeModelEvent.MAX_Y, new ModelEventListener() {
+		ModelEventListener maxY = new ModelEventListener() {
 			@Override public void actionPerformed(ModelEvent e) {
 				if(topBorderSlider.getValue() > model.getMaxY()) {
 					topBorderSlider.setValue(model.getMaxY());
@@ -288,15 +313,16 @@ public class ColorEdgeAdjustment extends JPanel {
 				topBorderSlider.setMinorTickSpacing(model.getMaxX() / 5 / 10);
 				topBorderSlider.setMajorTickSpacing(model.getMaxX() / 5);
 
-				bottomBorderSlider.setMinorTickSpacing(model.getMaxX() / 5 / 10);
+				bottomBorderSlider.setMinorTickSpacing(model.getMaxX() /
+				                                       5 / 10);
 				bottomBorderSlider.setMajorTickSpacing(model.getMaxX() / 5);
 
 				topBorderSlider.setMaximum(model.getMaxY());
 				bottomBorderSlider.setMaximum(model.getMaxY());
 			}
-		});
+		};
 
-		model.addModelEventListener(ColorEdgeModel.ColorEdgeModelEvent.MAX_X, new ModelEventListener() {
+		ModelEventListener maxX = new ModelEventListener() {
 			@Override public void actionPerformed(ModelEvent e) {
 				if(rightBorderSlider.getValue() > model.getMaxX()) {
 					rightBorderSlider.setValue(model.getMaxX());
@@ -305,15 +331,23 @@ public class ColorEdgeAdjustment extends JPanel {
 					leftBorderSlider.setValue(model.getMaxX());
 				}
 
-				rightBorderSlider.setMinorTickSpacing(model.getMaxX() / 5 / 10);
+				rightBorderSlider.setMinorTickSpacing(model.getMaxX() /
+				                                      5 / 10);
 				rightBorderSlider.setMajorTickSpacing(model.getMaxX() / 5);
 
-				leftBorderSlider.setMinorTickSpacing(model.getMaxX() / 5 / 10);
+				leftBorderSlider.setMinorTickSpacing(model.getMaxX() /
+				                                     5 / 10);
 				leftBorderSlider.setMajorTickSpacing(model.getMaxX() / 5);
 
 				rightBorderSlider.setMaximum(model.getMaxX());
 				leftBorderSlider.setMaximum(model.getMaxX());
 			}
-		});
+		};
+
+		model.addModelEventListener(ColorEdgeModel.ColorEdgeModelEvent.MAX_Y,
+		                            maxY);
+
+		model.addModelEventListener(ColorEdgeModel.ColorEdgeModelEvent.MAX_X,
+		                            maxX);
 	}
 }

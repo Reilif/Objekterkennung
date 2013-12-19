@@ -6,9 +6,11 @@ import org.opencv.core.Mat;
 import java.awt.image.BufferedImage;
 
 /**
- * Model of the GUI.
- * The class provides all GUI objects with information and events - it's pretty "blown up" because of the getter and
- * setter and an ugly workaround of integer restriction in sliders - nothing special happens here.
+ * The Model holds all information about the CircleDetection.
+ * <p/>
+ * Model for the GUI. The class provides all GUI objects with information and
+ * events - it's pretty "blown up" because of the getter and setter and an ugly
+ * workaround of integer restriction in sliders - nothing special happens here.
  */
 public class CircleModel extends Model<CircleModel.CircleModelEvent> {
 	private final int           sliderMultiplier;
@@ -29,6 +31,9 @@ public class CircleModel extends Model<CircleModel.CircleModelEvent> {
 	 */
 	public CircleModel() {
 		super(CircleModel.CircleModelEvent.values());
+		// The sliderMultiplier is used for the GUI - Sliders only accept
+		// integer values but since openCV woks with doubles and is in need to
+		// have small changes this will be used to shift the decimal places.
 		sliderMultiplier = 100;
 
 		density = 1.5;
@@ -45,14 +50,15 @@ public class CircleModel extends Model<CircleModel.CircleModelEvent> {
 	}
 
 	/**
-	 * @return The return value is the result of the Hough-Transformation function (edge detection)
+	 * @return The return value is the result of the CircleDetection
 	 */
 	public BufferedImage getCircleImage() {
 		return circleImage;
 	}
 
 	/**
-	 * @param edgeImage The value represents the new BufferedImage from teh edge detection
+	 * @param edgeImage The value represents the new BufferedImage from the
+	 *                  circle detection
 	 */
 	public void setCircleImage(BufferedImage edgeImage) {
 		this.circleImage = edgeImage;
@@ -97,6 +103,12 @@ public class CircleModel extends Model<CircleModel.CircleModelEvent> {
 		return getDensityMax(true);
 	}
 
+	/**
+	 * @param withMultiplier The value determines if a multiplier shall be used
+	 *
+	 * @return The return value is the maximum destiny that will be used by the
+	 * CircleDetection
+	 */
 	public double getDensityMax(boolean withMultiplier) {
 		if(withMultiplier) {
 			return densityMax * sliderMultiplier;
@@ -108,6 +120,12 @@ public class CircleModel extends Model<CircleModel.CircleModelEvent> {
 		return getDensityMin(false);
 	}
 
+	/**
+	 * @param withMultiplier The value determines if a multiplier shall be used
+	 *
+	 * @return The return value is the minimum destiny that will be used by the
+	 * CircleDetection
+	 */
 	public double getDensityMin(boolean withMultiplier) {
 		if(withMultiplier) {
 			return densityMin * sliderMultiplier;
@@ -119,6 +137,12 @@ public class CircleModel extends Model<CircleModel.CircleModelEvent> {
 		return getDensity(false);
 	}
 
+	/**
+	 * @param withMultiplier The value determines if a multiplier shall be used
+	 *
+	 * @return The return value is the destiny that will be used by the
+	 * CircleDetection
+	 */
 	public double getDensity(boolean withMultiplier) {
 		if(withMultiplier) {
 			return density * sliderMultiplier;
@@ -130,6 +154,12 @@ public class CircleModel extends Model<CircleModel.CircleModelEvent> {
 		setDensity(density, false);
 	}
 
+	/**
+	 * @param density        The value determines the new destiny that shall be
+	 *                       used by the Circle Detection
+	 * @param withMultiplier The value determines if a multiplier was previously
+	 *                       used
+	 */
 	public void setDensity(double density, boolean withMultiplier) {
 		if(withMultiplier) {
 			this.density = density / sliderMultiplier;
@@ -148,12 +178,8 @@ public class CircleModel extends Model<CircleModel.CircleModelEvent> {
 		fireModelEvent(CircleModelEvent.CIRCLES);
 	}
 
-	public int getSliderMultiplier() {
-		return sliderMultiplier;
-	}
-
 	/**
-	 * Enum list used for the events of the EdgeModel
+	 * Enum list used for the events of the CircleModel
 	 */
 	public enum CircleModelEvent {
 		CIRCLE_IMG, CIRCLES, DENSITY, CIRCLE_MAX_SIZE, CIRCLE_MIN_SIZE

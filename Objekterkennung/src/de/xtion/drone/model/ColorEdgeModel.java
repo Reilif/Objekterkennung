@@ -1,12 +1,18 @@
 package de.xtion.drone.model;
 
-import java.awt.image.BufferedImage;
-
-import org.opencv.core.Scalar;
-
 import de.xtion.drone.interfaces.PositionData;
 import de.xtion.drone.model.util.Model;
+import org.opencv.core.Scalar;
 
+import java.awt.image.BufferedImage;
+
+/**
+ * The Model holds all information about the ColorEdgeDetection
+ * <p/>
+ * Model for the GUI. The class provides all GUI objects with information and
+ * events - it's pretty "blown up" because of the getter and setter and an ugly
+ * workaround of integer restriction in sliders - nothing special happens here.
+ */
 public class ColorEdgeModel extends Model<ColorEdgeModel.ColorEdgeModelEvent> {
 	public final int           sliderMultiplier;
 	private      BufferedImage colorEdgeImage;
@@ -45,6 +51,9 @@ public class ColorEdgeModel extends Model<ColorEdgeModel.ColorEdgeModelEvent> {
 
 	public ColorEdgeModel() {
 		super(ColorEdgeModelEvent.values());
+		// The sliderMultiplier is used for the GUI - Sliders only accept
+		// integer values but since openCV woks with doubles and is in need to
+		// have small changes this will be used to shift the decimal places.
 		sliderMultiplier = 10000;
 
 		//value of lower
@@ -67,25 +76,31 @@ public class ColorEdgeModel extends Model<ColorEdgeModel.ColorEdgeModelEvent> {
 		sMax = 255;
 		vMax = 255;
 
+		//Sets the top border
 		topBorder = 50;
 		topX = 0;
 		topY = 0;
 
+		//Sets the right border
 		rightBorder = 50;
 		rightX = 0;
 		rightY = 0;
 
+		//Sets the bottom border
 		bottomBorder = 50;
 		bottomX = 0;
 		bottomY = 0;
 
+		//Sets the left border
 		leftBorder = 50;
 		leftX = 0;
 		leftY = 0;
 
+		// Sets the maximum width and height
 		maxX = 800;
 		maxY = 800;
 
+		//Sets the color threshold
 		colorThreshold = 5;
 		colorThresholdMin = 0;
 		colorThresholdMax = 100;
@@ -95,6 +110,11 @@ public class ColorEdgeModel extends Model<ColorEdgeModel.ColorEdgeModelEvent> {
 		upperThreshold = new Scalar(hUpper, sUpper, vUpper);
 	}
 
+	/**
+	 * @param colorThreshold The value determines the color threshold
+	 * @param multiplier     The value determines if a multiplier was previously
+	 *                       used
+	 */
 	public void setColorThreshold(double colorThreshold, boolean multiplier) {
 		if(multiplier) {
 			setColorThreshold(colorThreshold / sliderMultiplier);
@@ -103,6 +123,11 @@ public class ColorEdgeModel extends Model<ColorEdgeModel.ColorEdgeModelEvent> {
 		}
 	}
 
+	/**
+	 * @param multiplier The value determines if a multiplier shall be used
+	 *
+	 * @return The return value is the minimum color threshold
+	 */
 	public int getColorThresholdMin(boolean multiplier) {
 		if(multiplier) {
 			return colorThresholdMin * sliderMultiplier;
@@ -110,6 +135,11 @@ public class ColorEdgeModel extends Model<ColorEdgeModel.ColorEdgeModelEvent> {
 		return colorThresholdMin;
 	}
 
+	/**
+	 * @param multiplier The value determines if a multiplier shall be used
+	 *
+	 * @return The return value is the maximum color threshold
+	 */
 	public int getColorThresholdMax(boolean multiplier) {
 		if(multiplier) {
 			return colorThresholdMax * sliderMultiplier;
@@ -117,6 +147,11 @@ public class ColorEdgeModel extends Model<ColorEdgeModel.ColorEdgeModelEvent> {
 		return colorThresholdMax;
 	}
 
+	/**
+	 * @param multiplier The value determines if a multiplier shall be used
+	 *
+	 * @return The return value is the color threshold
+	 */
 	public double getColorThreshold(boolean multiplier) {
 		if(multiplier) {
 			return colorThreshold * sliderMultiplier;
@@ -381,5 +416,4 @@ public class ColorEdgeModel extends Model<ColorEdgeModel.ColorEdgeModelEvent> {
 	public enum ColorEdgeModelEvent {
 		COLOR_EDGE_IMAGE, LOWER_THR, UPPER_THR, COLOR_EDGE_POS, MAX_X, MAX_Y
 	}
-
 }

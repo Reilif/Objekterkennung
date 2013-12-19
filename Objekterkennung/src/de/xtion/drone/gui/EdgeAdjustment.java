@@ -10,25 +10,27 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 
 /**
- * This Panel provides the options to change the values in the EdgeModel at runtime.
+ * This Panel provides the options to change the values in the EdgeModel at
+ * runtime.
  */
 public class EdgeAdjustment extends JPanel {
 	private final int     scaleMinorSpacing = 300;
 	private final int     scaleMajorSpacing = 3000;
 	private final boolean scalePaintTicks   = true;
-	JSlider cannnyRadiusSlider;
-	JSlider cannnyThresholdOneSlider;
-	JSlider cannnyThresholdTwoSlider;
-	JLabel  cannnyRadiusLabel;
-	JLabel  cannnyThresholdOneLabel;
-	JLabel  cannnyThresholdTwoLabel;
+	JSlider cannyRadiusSlider;
+	JSlider cannyThresholdOneSlider;
+	JSlider cannyThresholdTwoSlider;
+	JLabel  cannyRadiusLabel;
+	JLabel  cannyThresholdOneLabel;
+	JLabel  cannyThresholdTwoLabel;
 	String  cannyRadiusString;
 	String  cannyThresholdOneString;
 	String  cannyThresholdTwoString;
 	private EdgeModel model;
 
 	/**
-	 * @param edgeModel The parameter represents the EdgeModel the object is getting and setting information from/to
+	 * @param edgeModel The parameter represents the EdgeModel the object is
+	 *                  getting and setting information from/to
 	 */
 	public EdgeAdjustment(EdgeModel edgeModel) {
 		super(new GridLayout(3, 2));
@@ -41,81 +43,99 @@ public class EdgeAdjustment extends JPanel {
 		cannyThresholdTwoString = "Threshold 2: ";
 
 		//Slider
-		cannnyRadiusSlider = new JSlider(JSlider.HORIZONTAL, (int) model.getCannyRadiusMin(true),
-		                                 (int) model.getCannyRadiusMax(true), (int) model.getCannyRadius(true));
-		cannnyThresholdOneSlider = new JSlider(JSlider.HORIZONTAL, 0, (int) model.getCannyThresholdOneMax(true),
-		                                       (int) model.getCannyThresholdOne(true));
-		cannnyThresholdTwoSlider = new JSlider(JSlider.HORIZONTAL, 0, (int) model.getCannyThresholdTwoMax(true),
-		                                       (int) model.getCannyThresholdTwo(true));
+		cannyRadiusSlider = new JSlider(JSlider.HORIZONTAL,
+		                                (int) model.getCannyRadiusMin(true),
+		                                (int) model.getCannyRadiusMax(true),
+		                                (int) model.getCannyRadius(true));
+		cannyThresholdOneSlider = new JSlider(JSlider.HORIZONTAL, 0, (int) model
+				.getCannyThresholdOneMax(true), (int) model
+				.getCannyThresholdOne(true));
+		cannyThresholdTwoSlider = new JSlider(JSlider.HORIZONTAL, 0, (int) model
+				.getCannyThresholdTwoMax(true), (int) model
+				.getCannyThresholdTwo(true));
 		//Labels
-		cannnyRadiusLabel = new JLabel(cannyRadiusString + model.getCannyRadius());
-		cannnyThresholdOneLabel = new JLabel(cannyThresholdOneString + model.getCannyThresholdOne());
-		cannnyThresholdTwoLabel = new JLabel(cannyThresholdTwoString + model.getCannyThresholdTwo());
+		cannyRadiusLabel =
+				new JLabel(cannyRadiusString + model.getCannyRadius());
+		cannyThresholdOneLabel = new JLabel(
+				cannyThresholdOneString + model.getCannyThresholdOne());
+		cannyThresholdTwoLabel = new JLabel(
+				cannyThresholdTwoString + model.getCannyThresholdTwo());
 
 		//Scale
-		cannnyRadiusSlider.setMinorTickSpacing(scaleMinorSpacing / 3);
-		cannnyRadiusSlider.setMajorTickSpacing(scaleMajorSpacing / 3);
-		cannnyRadiusSlider.setPaintTicks(scalePaintTicks);
+		cannyRadiusSlider.setMinorTickSpacing(scaleMinorSpacing / 3);
+		cannyRadiusSlider.setMajorTickSpacing(scaleMajorSpacing / 3);
+		cannyRadiusSlider.setPaintTicks(scalePaintTicks);
 
-		cannnyThresholdOneSlider.setMinorTickSpacing(scaleMinorSpacing);
-		cannnyThresholdOneSlider.setMajorTickSpacing(scaleMajorSpacing);
-		cannnyThresholdOneSlider.setPaintTicks(scalePaintTicks);
+		cannyThresholdOneSlider.setMinorTickSpacing(scaleMinorSpacing);
+		cannyThresholdOneSlider.setMajorTickSpacing(scaleMajorSpacing);
+		cannyThresholdOneSlider.setPaintTicks(scalePaintTicks);
 
-		cannnyThresholdTwoSlider.setMinorTickSpacing(scaleMinorSpacing);
-		cannnyThresholdTwoSlider.setMajorTickSpacing(scaleMajorSpacing);
-		cannnyThresholdTwoSlider.setPaintTicks(scalePaintTicks);
+		cannyThresholdTwoSlider.setMinorTickSpacing(scaleMinorSpacing);
+		cannyThresholdTwoSlider.setMajorTickSpacing(scaleMajorSpacing);
+		cannyThresholdTwoSlider.setPaintTicks(scalePaintTicks);
 
 		//adding
-		add(cannnyRadiusLabel);
-		add(cannnyRadiusSlider);
-		add(cannnyThresholdOneLabel);
-		add(cannnyThresholdOneSlider);
-		add(cannnyThresholdTwoLabel);
-		add(cannnyThresholdTwoSlider);
+		add(cannyRadiusLabel);
+		add(cannyRadiusSlider);
+		add(cannyThresholdOneLabel);
+		add(cannyThresholdOneSlider);
+		add(cannyThresholdTwoLabel);
+		add(cannyThresholdTwoSlider);
 
 		//Listeners on Slider
-		cannnyRadiusSlider.addChangeListener(new ChangeListener() {
+		cannyRadiusSlider.addChangeListener(new ChangeListener() {
 			@Override public void stateChanged(final ChangeEvent event) {
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override public void run() {
-						model.setCannyRadius(((JSlider) event.getSource()).getValue(), true);
-						cannnyRadiusLabel.setText(cannyRadiusString + model.getCannyRadius());
+						model.setCannyRadius(
+								((JSlider) event.getSource()).getValue(), true);
+						cannyRadiusLabel.setText(
+								cannyRadiusString + model.getCannyRadius());
 					}
 				});
 			}
 		});
 
-		cannnyThresholdOneSlider.addChangeListener(new ChangeListener() {
+		cannyThresholdOneSlider.addChangeListener(new ChangeListener() {
 			@Override public void stateChanged(final ChangeEvent event) {
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override public void run() {
-						model.setCannyThresholdOne(((JSlider) event.getSource()).getValue(), true);
-						cannnyThresholdOneLabel.setText(cannyThresholdOneString + model.getCannyThresholdOne());
+						model.setCannyThresholdOne(
+								((JSlider) event.getSource()).getValue(), true);
+						cannyThresholdOneLabel.setText(cannyThresholdOneString +
+						                               model.getCannyThresholdOne());
 					}
 				});
 			}
 		});
 
-		cannnyThresholdTwoSlider.addChangeListener(new ChangeListener() {
+		cannyThresholdTwoSlider.addChangeListener(new ChangeListener() {
 			@Override public void stateChanged(final ChangeEvent event) {
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override public void run() {
-						model.setCannyThresholdTwo(((JSlider) event.getSource()).getValue(), true);
-						cannnyThresholdTwoLabel.setText(cannyThresholdTwoString + model.getCannyThresholdTwo());
+						model.setCannyThresholdTwo(
+								((JSlider) event.getSource()).getValue(), true);
+						cannyThresholdTwoLabel.setText(cannyThresholdTwoString +
+						                               model.getCannyThresholdTwo());
 					}
 				});
 			}
 		});
 
-		//Listener on Model
-		model.addModelEventListener(EdgeModel.EdgeModelEvent.CAN_THR_ONE_MAX, new ModelEventListener() {
+		ModelEventListener ctom = new ModelEventListener() {
 			@Override public void actionPerformed(ModelEvent event) {
 				SwingUtilities.invokeLater(new Runnable() {
-					@Override public void run() {
-						cannnyThresholdTwoSlider.setMaximum((int) model.getCannyThresholdTwoMax(true));
+					@Override
+					public void run() {
+						cannyThresholdTwoSlider.setMaximum(
+								(int) model.getCannyThresholdTwoMax(true));
 					}
 				});
 			}
-		});
+		};
+
+		//Listener on Model
+		model.addModelEventListener(EdgeModel.EdgeModelEvent.CAN_THR_ONE_MAX,
+		                            ctom);
 	}
 }

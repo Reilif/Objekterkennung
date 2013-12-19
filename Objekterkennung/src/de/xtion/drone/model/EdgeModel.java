@@ -1,15 +1,14 @@
 package de.xtion.drone.model;
 
-import java.awt.image.BufferedImage;
-
+import de.xtion.drone.model.util.Model;
 import org.opencv.core.Mat;
 
-import de.xtion.drone.model.util.Model;
+import java.awt.image.BufferedImage;
 
 /**
- * Model of the GUI.
- * The class provides all GUI objects with information and events - it's pretty "blown up" because of the getter and
- * setter and an ugly workaround of integer restriction in sliders - nothing special happens here.
+ * Model of the GUI. The class provides all GUI objects with information and
+ * events - it's pretty "blown up" because of the getter and setter and an ugly
+ * workaround of integer restriction in sliders - nothing special happens here.
  */
 public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
 	private int           videoWidth;
@@ -23,7 +22,7 @@ public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
 	private double        cannyThresholdTwoMax;
 	private int           sliderMultiplier;
 	private BufferedImage edgeImage;
-	private Mat mat;
+	private Mat           mat;
 
 	/**
 	 * Initialisation of all values
@@ -48,15 +47,54 @@ public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
 	}
 
 	/**
-	 * @return The return value is the first max threshold for the Canny function
+	 * @param cannyThresholdTwoMax The value represents the new value of the
+	 *                             second max threshold for the Canny function
+	 * @param withMultiplier       if a multiplier should be used
+	 */
+	public void setCannyThresholdTwoMax(double cannyThresholdTwoMax,
+	                                    boolean withMultiplier) {
+		if(withMultiplier) {
+			cannyThresholdTwoMax /= sliderMultiplier;
+		}
+		this.cannyThresholdTwoMax = cannyThresholdTwoMax * cannyRadius;
+		fireModelEvent(EdgeModelEvent.CAN_THR_TWO_MAX);
+	}
+
+	/**
+	 * @return The return value is the first max threshold for the Canny
+	 * function
 	 */
 	public double getCannyThresholdOneMax() {
 		return getCannyThresholdOneMax(false);
 	}
 
 	/**
+	 * @param cannyThresholdOneMax The value represents the new value of the
+	 *                             first max threshold for the Canny function
+	 */
+	private void setCannyThresholdOneMax(double cannyThresholdOneMax) {
+		setCannyThresholdOneMax(cannyThresholdOneMax, false);
+	}
+
+	/**
+	 * @param cannyThresholdOneMax The value represents the new value of the
+	 *                             first max threshold for the Canny function
+	 * @param withMultiplier       if a multiplier should be used
+	 */
+	private void setCannyThresholdOneMax(double cannyThresholdOneMax,
+	                                     boolean withMultiplier) {
+		if(withMultiplier) {
+			cannyThresholdOneMax /= sliderMultiplier;
+		}
+		this.cannyThresholdOneMax = cannyThresholdOneMax * cannyRadius;
+		fireModelEvent(EdgeModelEvent.CAN_THR_ONE_MAX);
+	}
+
+	/**
 	 * @param withMultiplier if a multiplier should be used
-	 * @return The return value is the first max threshold for the Canny function (with a multiplier)
+	 *
+	 * @return The return value is the first max threshold for the Canny
+	 * function (with a multiplier)
 	 */
 	public double getCannyThresholdOneMax(boolean withMultiplier) {
 		if(withMultiplier) {
@@ -66,59 +104,32 @@ public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
 	}
 
 	/**
-	 * @param cannyThresholdOneMax The value represents the new value of the first max threshold for the Canny function
-	 */
-	private void setCannyThresholdOneMax(double cannyThresholdOneMax) {
-		setCannyThresholdOneMax(cannyThresholdOneMax, false);
-	}
-
-	/**
-	 * @param cannyThresholdOneMax The value represents the new value of the first max threshold for the Canny function
-	 * @param withMultiplier       if a multiplier should be used
-	 */
-	private void setCannyThresholdOneMax(double cannyThresholdOneMax, boolean withMultiplier) {
-		if(withMultiplier) {
-			cannyThresholdOneMax /= sliderMultiplier;
-		}
-		this.cannyThresholdOneMax = cannyThresholdOneMax * cannyRadius;
-		fireModelEvent(EdgeModelEvent.CAN_THR_ONE_MAX);
-	}
-
-	/**
-	 * @return The return value is the second max threshold for the Canny function
+	 * @return The return value is the second max threshold for the Canny
+	 * function
 	 */
 	public double getCannyThresholdTwoMax() {
 		return getCannyThresholdTwoMax(false);
 	}
 
 	/**
-	 * @param withMultiplier if a multiplier should be used
-	 * @return The return value is the second max threshold for the Canny function (with a multiplier)
-	 */
-	public double getCannyThresholdTwoMax(boolean withMultiplier) {
-		if(withMultiplier) {
-			return cannyThresholdTwoMax * sliderMultiplier;
-		}
-		return cannyThresholdTwoMax;
-	}
-
-	/**
-	 * @param cannyThresholdTwoMax The value represents the new value of the second max threshold for the Canny function
+	 * @param cannyThresholdTwoMax The value represents the new value of the
+	 *                             second max threshold for the Canny function
 	 */
 	public void setCannyThresholdTwoMax(double cannyThresholdTwoMax) {
 		setCannyThresholdOneMax(cannyThresholdTwoMax, false);
 	}
 
 	/**
-	 * @param cannyThresholdTwoMax The value represents the new value of the second max threshold for the Canny function
-	 * @param withMultiplier       if a multiplier should be used
+	 * @param withMultiplier if a multiplier should be used
+	 *
+	 * @return The return value is the second max threshold for the Canny
+	 * function (with a multiplier)
 	 */
-	public void setCannyThresholdTwoMax(double cannyThresholdTwoMax, boolean withMultiplier) {
+	public double getCannyThresholdTwoMax(boolean withMultiplier) {
 		if(withMultiplier) {
-			cannyThresholdTwoMax /= sliderMultiplier;
+			return cannyThresholdTwoMax * sliderMultiplier;
 		}
-		this.cannyThresholdTwoMax = cannyThresholdTwoMax * cannyRadius;
-		fireModelEvent(EdgeModelEvent.CAN_THR_TWO_MAX);
+		return cannyThresholdTwoMax;
 	}
 
 	/**
@@ -129,33 +140,38 @@ public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
 	}
 
 	/**
-	 * @param withMultiplier if a multiplier should be used
-	 * @return The return value is the first threshold for the Canny function (with a multiplier)
-	 */
-	public double getCannyThresholdOne(boolean withMultiplier) {
-		if(withMultiplier) {
-			return cannyThresholdOne * sliderMultiplier;
-		}
-		return cannyThresholdOne;
-	}
-
-	/**
-	 * @param cannyThresholdOne The value represents the new value of the first threshold for the Canny function
+	 * @param cannyThresholdOne The value represents the new value of the first
+	 *                          threshold for the Canny function
 	 */
 	public void setCannyThresholdOne(double cannyThresholdOne) {
 		setCannyThresholdOne(cannyThresholdOne, false);
 	}
 
 	/**
-	 * @param cannyThresholdOne The value represents the new value of the first threshold for the Canny function
+	 * @param cannyThresholdOne The value represents the new value of the first
+	 *                          threshold for the Canny function
 	 * @param withMultiplier    if a multiplier should be used
 	 */
-	public void setCannyThresholdOne(double cannyThresholdOne, boolean withMultiplier) {
+	public void setCannyThresholdOne(double cannyThresholdOne,
+	                                 boolean withMultiplier) {
 		if(withMultiplier) {
 			cannyThresholdOne /= sliderMultiplier;
 		}
 		this.cannyThresholdOne = cannyThresholdOne;
 		fireModelEvent(EdgeModelEvent.CAN_THR_ONE);
+	}
+
+	/**
+	 * @param withMultiplier if a multiplier should be used
+	 *
+	 * @return The return value is the first threshold for the Canny function
+	 * (with a multiplier)
+	 */
+	public double getCannyThresholdOne(boolean withMultiplier) {
+		if(withMultiplier) {
+			return cannyThresholdOne * sliderMultiplier;
+		}
+		return cannyThresholdOne;
 	}
 
 	/**
@@ -166,33 +182,38 @@ public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
 	}
 
 	/**
-	 * @param withMultiplier if a multiplier should be used
-	 * @return The return value is the second threshold for the Canny function (with a multiplier)
-	 */
-	public double getCannyThresholdTwo(boolean withMultiplier) {
-		if(withMultiplier) {
-			return cannyThresholdTwo * sliderMultiplier;
-		}
-		return cannyThresholdTwo;
-	}
-
-	/**
-	 * @param cannyThresholdTwo The value represents the new value of the second threshold for the Canny function
+	 * @param cannyThresholdTwo The value represents the new value of the second
+	 *                          threshold for the Canny function
 	 */
 	public void setCannyThresholdTwo(double cannyThresholdTwo) {
 		setCannyThresholdTwo(cannyThresholdTwo, false);
 	}
 
 	/**
-	 * @param cannyThresholdTwo The value represents the new value of the second threshold for the Canny function
+	 * @param cannyThresholdTwo The value represents the new value of the second
+	 *                          threshold for the Canny function
 	 * @param withMultiplier    if a multiplier should be used
 	 */
-	public void setCannyThresholdTwo(double cannyThresholdTwo, boolean withMultiplier) {
+	public void setCannyThresholdTwo(double cannyThresholdTwo,
+	                                 boolean withMultiplier) {
 		if(withMultiplier) {
 			cannyThresholdTwo /= sliderMultiplier;
 		}
 		this.cannyThresholdTwo = cannyThresholdTwo;
 		fireModelEvent(EdgeModelEvent.CAN_THR_TWO);
+	}
+
+	/**
+	 * @param withMultiplier if a multiplier should be used
+	 *
+	 * @return The return value is the second threshold for the Canny function
+	 * (with a multiplier)
+	 */
+	public double getCannyThresholdTwo(boolean withMultiplier) {
+		if(withMultiplier) {
+			return cannyThresholdTwo * sliderMultiplier;
+		}
+		return cannyThresholdTwo;
 	}
 
 	/**
@@ -203,7 +224,8 @@ public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
 	}
 
 	/**
-	 * @param videoWidth The value represents the new value of the video frame width
+	 * @param videoWidth The value represents the new value of the video frame
+	 *                   width
 	 */
 	public void setVideoWidth(int videoWidth) {
 		this.videoWidth = videoWidth;
@@ -218,7 +240,8 @@ public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
 	}
 
 	/**
-	 * @param videoHeight The value represents the new value of the video frame height
+	 * @param videoHeight The value represents the new value of the video frame
+	 *                    height
 	 */
 	public void setVideoHeight(int videoHeight) {
 		this.videoHeight = videoHeight;
@@ -226,14 +249,16 @@ public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
 	}
 
 	/**
-	 * @return The return value is the result of the Canny function (edge detection)
+	 * @return The return value is the result of the Canny function (edge
+	 * detection)
 	 */
 	public BufferedImage getEdgeImage() {
 		return edgeImage;
 	}
 
 	/**
-	 * @param edgeImage The value represents the new BufferedImage from teh edge detection
+	 * @param edgeImage The value represents the new BufferedImage from teh edge
+	 *                  detection
 	 */
 	public void setEdgeImage(BufferedImage edgeImage) {
 		this.edgeImage = edgeImage;
@@ -248,27 +273,18 @@ public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
 	}
 
 	/**
-	 * @param withMultiplier if a multiplier should be used
-	 * @return The return value is the blur radius for the Canny function (with a multiplier)
-	 */
-	public double getCannyRadius(boolean withMultiplier) {
-		if(withMultiplier) {
-			return cannyRadius * sliderMultiplier;
-		}
-		return cannyRadius;
-	}
-
-	/**
-	 * @param cannyRadius The value represents the new value for the blur radius of the Canny function - the max value
-	 *                    for the second threshold is adjusted as well
+	 * @param cannyRadius The value represents the new value for the blur radius
+	 *                    of the Canny function - the max value for the second
+	 *                    threshold is adjusted as well
 	 */
 	public void setCannyRadius(double cannyRadius) {
 		setCannyRadius(cannyRadius, false);
 	}
 
 	/**
-	 * @param cannyRadius    The value represents the new value for the blur radius of the Canny function - the max value
-	 *                       for the second threshold is adjusted as well
+	 * @param cannyRadius    The value represents the new value for the blur
+	 *                       radius of the Canny function - the max value for
+	 *                       the second threshold is adjusted as well
 	 * @param withMultiplier if a multiplier should be used
 	 */
 	public void setCannyRadius(double cannyRadius, boolean withMultiplier) {
@@ -281,6 +297,19 @@ public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
 	}
 
 	/**
+	 * @param withMultiplier if a multiplier should be used
+	 *
+	 * @return The return value is the blur radius for the Canny function (with
+	 * a multiplier)
+	 */
+	public double getCannyRadius(boolean withMultiplier) {
+		if(withMultiplier) {
+			return cannyRadius * sliderMultiplier;
+		}
+		return cannyRadius;
+	}
+
+	/**
 	 * @return The return value is the min blur radius for the Canny function
 	 */
 	public double getCannyRadiusMin() {
@@ -289,7 +318,9 @@ public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
 
 	/**
 	 * @param withMultiplier if a multiplier should be used
-	 * @return The return value is the min blur radius for the Canny function (with a multiplier)
+	 *
+	 * @return The return value is the min blur radius for the Canny function
+	 * (with a multiplier)
 	 */
 	public double getCannyRadiusMin(boolean withMultiplier) {
 		if(withMultiplier) {
@@ -307,7 +338,9 @@ public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
 
 	/**
 	 * @param withMultiplier if a multiplier should be used
-	 * @return The return value is the max blur radius (with a multiplier) for the Canny function
+	 *
+	 * @return The return value is the max blur radius (with a multiplier) for
+	 * the Canny function
 	 */
 	public double getCannyRadiusMax(boolean withMultiplier) {
 		if(withMultiplier) {
@@ -316,20 +349,21 @@ public class EdgeModel extends Model<EdgeModel.EdgeModelEvent> {
 		return cannyRadiusMax;
 	}
 
-	/**
-	 * Enum list used for the events of the EdgeModel
-	 */
-	public enum EdgeModelEvent {
-		V_WIDTH, V_HEIGHT, EDGE_IMG, CAN_RADIUS, CAN_RADIUS_MAX, CAN_THR_ONE, CAN_THR_ONE_MAX, CAN_THR_TWO,
-		CAN_THR_TWO_MAX, EDGE_MAT
+	public Mat getEdgeMat() {
+		return mat;
 	}
 
 	public void setEdgeMat(Mat tempTwo) {
 		this.mat = tempTwo;
 		fireModelEvent(EdgeModelEvent.EDGE_MAT);
 	}
-	
-	public Mat getEdgeMat() {
-		return mat;
+
+	/**
+	 * Enum list used for the events of the EdgeModel
+	 */
+	public enum EdgeModelEvent {
+		V_WIDTH, V_HEIGHT, EDGE_IMG, CAN_RADIUS, CAN_RADIUS_MAX, CAN_THR_ONE,
+		CAN_THR_ONE_MAX, CAN_THR_TWO,
+		CAN_THR_TWO_MAX, EDGE_MAT
 	}
 }
